@@ -1,0 +1,114 @@
+:root {
+  /* Fonts */
+  --font-heading: "Karla", system-ui, sans-serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-quote: "Caveat", cursive;
+
+  /* Primitives: black ramp (warm browns) */
+  --pureBlack: #0d0500;
+  --pureWhite: #ffffff;
+  --black-80: #1c0e07;
+  --black-70: #381e10;
+  --black-60: #613e29;
+  --black-40: #915f3d;
+  --black-35: #b5815f;
+  --black-30: #ebb491;
+  --black-20: #ffd3ba;
+  --black-10: #fff1eb;
+  --black-5: #fffaf7;
+
+  /* Primitives: hues */
+  --sunsetDark: #8a4700;   --sunsetMain: #ab5800;   --sunsetLight: #f49644;   --sunsetLightest: #fffaf5;
+  --earthyDark: #2a7340;   --earthyMain: #3e9c5d;   --earthyLight: #86ebba;   --earthyLightest: #f5fffb;
+  --mariamDark: #780e43;   --mariamMain: #b5246a;   --mariamLight: #f2509c;   --mariamLightest: #fff5fa;
+  --dreamsDark: #432961;   --dreamsMain: #794ea3;   --dreamsLight: #ce91eb;   --dreamsLightest: #fff7ff;
+  --turquoiseDark: #276e8a; --turquoiseMain: #4296b8; --turquoiseLight: #92e6f0; --turquoiseLightest: #f5feff;
+  --oceanicDark: #27418a;  --oceanicMain: #4261b8;  --oceanicLightest: #f5f9ff;
+  --goldDark: #6e5200;     --goldMain: #c4930f;     --goldLight: #f0d58c;     --goldLightest: #fff9e6; /* new for Iris */
+
+  /* Semantic: background */
+  --backgroundElevation0: var(--black-5);        /* the cream ground */
+  --backgroundElevation1: var(--pureWhite);      /* character bubbles, cards */
+  --backgroundElevation2: var(--black-5);        /* inputs */
+  --backgroundElevation_Alt: var(--black-10);
+  --backgroundElevation_Alt200: var(--black-20); /* peach: you, selected */
+  --backgroundElevation_Alt300: var(--black-30);
+  --backgroundBlur: #fffaf7eb;
+  --backgroundBlur200: #fffaf7e0;
+  --backgroundOverlay: #0d050066;
+  --backgroundDark: var(--black-80);             /* video stage, toasts */
+  --backgroundBrand: var(--sunsetLight);         /* Rekka orange */
+  --backgroundAction_Default: var(--dreamsMain); /* purple: a character acts */
+  --backgroundAction_Light: var(--dreamsLight);
+  --backgroundAction_onBrand: var(--turquoiseMain);
+  --backgroundAction_onBrand_dark: var(--turquoiseDark); /* primary buttons, send */
+  --backgroundAction_onBrand_Lightest: var(--turquoiseLightest);
+  --backgroundConstructive: var(--earthyLightest);
+  --backgroundWarning: var(--mariamLightest);
+  --backgroundCallout: var(--sunsetLightest);
+
+  /* Semantic: content */
+  --contentPrimary: var(--black-70);
+  --contentSecondary: var(--black-60);
+  --contentTetiary: var(--black-40);            /* Rekka's spelling, keep it */
+  --contentPrimary_onColor: var(--black-10);
+  --contentSecondary_onColor: var(--black-20);
+  --contentTetiary_onColor: var(--black-30);
+  --content_Disabled: var(--black-30);
+  --content_Disabled_onColor: var(--black-40);
+  --contentWarning: var(--mariamDark);
+  --contentAction_Default: var(--dreamsMain);
+  --contentAction_onBrand: var(--turquoiseDark); /* link buttons */
+  --contentConstructive: var(--earthyDark);
+  --contentCallout: var(--sunsetDark);
+
+  /* Semantic: border */
+  --border_Functional: var(--black-30);          /* Figma value (#ebb491); the brief had black-35. See docs/DECISIONS.md */
+  --border_Decorative: var(--black-20);
+  --border_Focus: var(--black-40);
+  --border_Disabled: var(--black-20);
+  --borderAction_Default: var(--dreamsLight);
+  --borderAction_Focus: var(--dreamsDark);
+  --borderActionOnBrand_Default: var(--turquoiseLight);
+  --borderActionOnBrand_Focus: var(--turquoiseDark);
+  --borderWarning_Default: var(--mariamLight);
+  --borderWarning_Focus: var(--mariamMain);
+  --borderConstructive_Default: var(--earthyLight);
+  --borderCallout_Default: var(--sunsetLight);
+
+  /* Space (4px base), size, radius, border width */
+  --rk_spacing_half: 2px;  --rk_spacing_1x: 4px;   --rk_spacing_2x: 8px;   --rk_spacing_3x: 12px;
+  --rk_spacing_4x: 16px;   --rk_spacing_6x: 24px;  --rk_spacing_8x: 32px;  --rk_spacing_12x: 48px;
+  --rk_spacing_16x: 64px;  --rk_spacing_20x: 80px;
+  --rk_size_1x: 10px; --rk_size_2x: 12px; --rk_size_3x: 14px; --rk_size_4x: 16px; --rk_size_5x: 20px;
+  --rk_size_6x: 24px; --rk_size_7x: 32px; --rk_size_8x: 48px; --rk_size_9x: 64px; --rk_size_10x: 80px;
+  --radius-none: 0px; --radius-50: 2px; --radius-100: 4px; --radius-200: 8px; --radius-300: 12px; --radius-full: 9999px;
+  --borderWidth-M: 1px; --borderWidth-L: 2px;
+
+  /* Elevation, focus, blur */
+  --elevation_0: 0 0 0 0 #00000040;
+  --elevation_half: 1px 1px 4px 0 #00000014;
+  --elevation_1: 2px 2px 8px 0 #00000029;
+  --elevation_2: 2px 4px 16px 0 #0000003d;
+  --elevation_3: 2px 4px 32px 0 #00000047;
+  --elevation_4: 4px 8px 64px 0 #00000052;
+  --elevation_focus: 0 0 0 4px #ffd3baa3;          /* focused inputs */
+  --focusRing: 0 0 0 2px #fffaf7, 0 0 0 4px #915f3d; /* keyboard focus */
+  --rk_bg_blur_default: 8px;
+
+  /* Layout constants for this prototype (from the Figma screens) */
+  --layout-sidebar: 280px;
+  --layout-cast: 320px;
+  --layout-thread-column: 760px;
+  --layout-bubble-max: 560px;
+  --layout-bubble-text-max: 528px;
+  --layout-media-max: 480px;
+  --layout-image-max: 400px;
+  --layout-avatar-column: 36px;
+  --layout-touch: 44px;
+}
+
+/* Character identity: set data-character on any element; everything inside follows. */
+[data-character="bot-a"] { --character-ring: var(--oceanicMain); --character-tag-bg: var(--oceanicLightest); --character-tag-ink: var(--oceanicDark); }
+[data-character="bot-b"] { --character-ring: var(--goldMain);    --character-tag-bg: var(--goldLightest);    --character-tag-ink: var(--goldDark); }
+[data-character="user"]  { --character-ring: var(--border_Decorative); --character-tag-bg: var(--backgroundElevation_Alt); --character-tag-ink: var(--contentSecondary); }
