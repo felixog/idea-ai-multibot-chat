@@ -1,0 +1,4 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_1x); width: 100%; }
+.labels { display: flex; justify-content: space-between; gap: var(--rk_spacing_2x); color: var(--contentSecondary); }
+.track { height: var(--rk_spacing_1x); border-radius: var(--radius-50); background: var(--backgroundElevation_Alt200); overflow: hidden; }
+.fill { display: block; height: 100%; border-radius: var(--radius-50); background: var(--backgroundAction_Default); transition: width .3s ease; }

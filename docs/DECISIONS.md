@@ -33,3 +33,16 @@ Other phase 1 notes:
 | 9 | Avatar alt text | alt = name | n/a | alt = name by default; `decorative` (alt="") where the name is printed next to it | Avoids "Nova Nova" in screen readers. |
 | 10 | TypingIndicator | a bot ChatMessage with dots | n/a | `TypingDots` lives in TypingIndicator/; the full row composes ChatMessage in phase 4 | ChatMessage is a phase 4 component. |
 | 11 | Toast on mobile | 16 above the composer dock | n/a | fixed offset `calc(120px + 16px)`, `// TODO(spec)` | Dock height varies with the picker; revisit if it overlaps. |
+
+## Phase 3: media
+
+| # | Topic | Brief | Figma | Chosen | Why |
+| --- | --- | --- | --- | --- | --- |
+| 12 | Audio trim track border | not specified | 65:499 trimming: 1px peach hairline around the track | 1px `--border_Decorative` | Visual. |
+| 13 | EditCard ready play badge | centred 36 `--backgroundBlur` play badge on the thumbnail | 66:942 ready: no badge | No badge | Visual; Figma ready state has only the duration badge. |
+| 14 | EditCard working label | ProgressBar label = title | "Making your video" | "Making your video" / "Making your image" | Visual copy from Figma. |
+| 15 | Video stage art | poster SVG | Figma uses a raster with an inner frame | poster SVG | Brief: use the SVG originals. Small visual diff expected inside the stage. |
+| 16 | Extra building blocks | not named | n/a | `MediaCard` (shared shell + CardSlot), `TrimEditor` (waveform and frame-strip), `EditSlot` (PromptReference + Describe the change) | Shared by the three cards; the brief describes them inline. |
+| 17 | Types | brief's types | n/a | added `progress` to MediaBase, `steps` to EditCardMedia, `shakeKey` to `ui`, `preview` to state | Needed to render AgentSteps, the chip shake and the phone preview from state. |
+| 18 | Compact layout | container query < 300px | n/a | `container: mediacard` on the card; toolbar and stage switch at 268px content width | Same rule, card padding accounted for. |
+| 19 | Edit prompt on the hook | Nova regenerates in place for 2400ms, v2 | n/a | copy "Reworking the hook with your note. v2 coming up." `// TODO(spec)` | The brief gives no reply copy for this case. |

@@ -1,0 +1,31 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_2x); width: 100%; }
+
+/* Audio: waveform track */
+.wave { display: flex; height: var(--rk_size_8x); overflow: hidden; border-radius: var(--radius-200);
+  background: var(--backgroundElevation_Alt); border: var(--borderWidth-M) solid var(--border_Decorative); touch-action: none; }
+.cut { display: flex; align-items: center; flex: none; min-width: 0; overflow: hidden; padding: var(--rk_spacing_3x) var(--rk_spacing_1x); opacity: .45; }
+.selection { display: flex; align-items: center; flex: 1; min-width: 0; overflow: hidden; padding: var(--rk_spacing_2x); background: var(--backgroundBrand); }
+.handle { position: relative; display: grid; place-items: center; flex: none; width: var(--rk_spacing_2x); height: 100%;
+  background: var(--backgroundDark); cursor: ew-resize; touch-action: none; }
+.handle::after { content: ''; position: absolute; inset: 0 calc(-1 * var(--rk_spacing_2x)); }
+.handle:focus-visible { box-shadow: var(--focusRing); z-index: 1; }
+.grip { width: var(--rk_spacing_half); height: var(--rk_size_4x); border-radius: var(--radius-50); background: var(--backgroundBrand); }
+
+/* Video: frame strip */
+.frames { height: 40px; padding: var(--rk_spacing_half); border-radius: var(--radius-200); background: var(--backgroundDark); }
+.strip { position: relative; display: flex; gap: var(--rk_spacing_half); height: 100%; touch-action: none; }
+.cell { flex: 1; border-radius: var(--radius-50); background: var(--black-70); transition: opacity .15s; }
+.cellAlt { background: var(--black-60); }
+.cellOut { opacity: .4; }
+.window { position: absolute; top: 0; bottom: 0; border-top: var(--borderWidth-L) solid var(--backgroundBrand);
+  border-bottom: var(--borderWidth-L) solid var(--backgroundBrand); pointer-events: none; }
+.fhandle { position: absolute; top: calc(-1 * var(--borderWidth-L)); bottom: calc(-1 * var(--borderWidth-L)); width: 6px;
+  border-radius: var(--radius-50); background: var(--backgroundBrand); cursor: ew-resize; pointer-events: auto; touch-action: none; }
+.fhandle::after { content: ''; position: absolute; inset: 0 calc(-1 * var(--rk_spacing_2x)); }
+.fhandle:focus-visible { box-shadow: var(--focusRing); }
+.fhandleStart { left: 0; }
+.fhandleEnd { right: 0; }
+
+.times { display: flex; justify-content: space-between; gap: var(--rk_spacing_2x); color: var(--contentPrimary); }
+.muted { color: var(--contentSecondary); }
+.actions { display: flex; justify-content: flex-end; gap: var(--rk_spacing_2x); }

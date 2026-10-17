@@ -1,0 +1,11 @@
+.root { container: mediacard / inline-size; display: flex; flex-direction: column; gap: var(--rk_spacing_3x);
+  width: 100%; max-width: var(--layout-media-max); padding: var(--rk_spacing_4x); border-radius: var(--radius-300);
+  background: var(--backgroundElevation1); box-shadow: var(--elevation_half); transition: box-shadow 1.2s ease-out; }
+.image { max-width: var(--layout-image-max); }
+.highlight { box-shadow: var(--elevation_half), 0 0 0 2px var(--character-ring); transition: none; }
+.meta { display: flex; align-items: center; gap: var(--rk_spacing_2x); min-width: 0; }
+.icon { flex: none; color: var(--contentPrimary); }
+.title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--contentPrimary); }
+.details { flex: none; color: var(--contentTetiary); }
+.slot { display: flex; flex-direction: column; gap: var(--rk_spacing_3x); padding-top: var(--rk_spacing_3x);
+  border-top: var(--borderWidth-M) solid var(--border_Decorative); }

@@ -1,0 +1,4 @@
+.image { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-200);
+  background: var(--backgroundDark); transition: filter .3s ease; }
+.skeleton { display: grid; place-items: center; width: 100%; aspect-ratio: 1 / 1; border-radius: var(--radius-200);
+  background: var(--backgroundElevation_Alt); color: var(--contentTetiary); }

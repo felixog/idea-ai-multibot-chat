@@ -1,0 +1,11 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_3x); width: 100%; min-width: 0; }
+.list { display: flex; flex-direction: column; gap: var(--rk_spacing_2x); margin: 0; padding: 0; list-style: none; }
+.step { display: flex; align-items: flex-start; gap: var(--rk_spacing_2x); color: var(--contentSecondary); min-width: 0; }
+.icon { flex: none; margin-top: var(--rk_spacing_half); }
+.body { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.detail { color: var(--contentSecondary); }
+.done .icon { color: var(--contentConstructive); }
+.active { color: var(--contentPrimary); }
+.active .icon { color: var(--contentAction_Default); animation: rk-spin .9s linear infinite; }
+.pending .icon { color: var(--contentTetiary); }
+@keyframes rk-spin { to { transform: rotate(360deg); } }

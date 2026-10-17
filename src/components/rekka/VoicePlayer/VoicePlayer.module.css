@@ -1,0 +1,9 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_1x); width: 100%; }
+.controls { display: flex; align-items: center; gap: var(--rk_spacing_2x); }
+.track { position: relative; flex: 1; height: var(--rk_size_7x); border-radius: var(--radius-300);
+  background: var(--backgroundElevation_Alt300); cursor: pointer; touch-action: none; }
+.fill { position: absolute; inset: 0 auto 0 0; border-radius: var(--radius-300); background: var(--backgroundBrand); }
+.playhead { position: absolute; top: calc(-1 * var(--rk_spacing_1x)); width: var(--rk_size_6x); height: 40px;
+  border-radius: var(--radius-full); background: var(--sunsetDark); cursor: grab; }
+.playhead:focus-visible { box-shadow: var(--focusRing); }
+.times { display: flex; justify-content: space-between; padding-left: 40px; color: var(--contentPrimary); }

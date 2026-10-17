@@ -1,0 +1,7 @@
+.root { position: absolute; right: 0; top: calc(100% + var(--rk_spacing_2x)); z-index: 30; width: 220px;
+  display: flex; flex-direction: column; padding: var(--rk_spacing_1x); border-radius: var(--radius-300);
+  background: var(--backgroundElevation1); box-shadow: var(--elevation_3); }
+.up { top: auto; bottom: calc(100% + var(--rk_spacing_2x)); }
+.item { display: flex; align-items: center; gap: var(--rk_spacing_2x); height: var(--layout-touch); padding: 0 var(--rk_spacing_3x);
+  border-radius: var(--radius-200); color: var(--contentPrimary); text-align: left; cursor: pointer; }
+.item:hover, .item:focus-visible { background: var(--backgroundElevation_Alt); box-shadow: none; }

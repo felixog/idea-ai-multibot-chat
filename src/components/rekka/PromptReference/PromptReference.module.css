@@ -1,0 +1,8 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_1x);
+  padding: var(--rk_spacing_2x) var(--rk_spacing_2x) var(--rk_spacing_3x) var(--rk_spacing_3x);
+  border-radius: var(--radius-300); background: var(--backgroundElevation_Alt); }
+.head { display: flex; align-items: center; gap: var(--rk_spacing_2x); }
+.icon { flex: none; color: var(--contentSecondary); }
+.title { flex: 1; min-width: 0; color: var(--contentPrimary); }
+.version { flex: none; color: var(--contentSecondary); }
+.text { padding-right: var(--rk_spacing_2x); color: var(--contentSecondary); user-select: text; cursor: text; }

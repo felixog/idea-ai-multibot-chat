@@ -1,0 +1,5 @@
+.root { display: flex; align-items: center; justify-content: space-between; gap: var(--rk_spacing_1x); width: 100%; min-width: 0; }
+.bar { flex: 0 1 6px; min-width: var(--rk_spacing_half); border-radius: var(--radius-full); }
+.light .bar { background: var(--backgroundElevation_Alt200); }
+.ink .bar { background: var(--contentPrimary); }
+.brand .bar { background: var(--backgroundBrand); }

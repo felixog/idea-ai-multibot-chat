@@ -1,0 +1,11 @@
+.list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; width: 100%; }
+.root { display: flex; align-items: center; gap: var(--rk_spacing_2x); padding: var(--rk_spacing_2x) 0; }
+.root + .root { border-top: var(--borderWidth-M) solid var(--border_Decorative); }
+.tile { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: var(--radius-200); }
+.ai .tile { background: var(--dreamsLightest); color: var(--contentAction_Default); }
+.user .tile { background: var(--backgroundElevation_Alt); color: var(--contentPrimary); }
+.body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.title { color: var(--contentPrimary); }
+.detail { color: var(--contentSecondary); }
+.undone .title { color: var(--contentTetiary); text-decoration: line-through; }
+.undone .tile { background: var(--backgroundElevation_Alt); color: var(--contentTetiary); }

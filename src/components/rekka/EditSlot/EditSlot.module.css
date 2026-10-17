@@ -1,0 +1,8 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_3x); padding-top: var(--rk_spacing_3x);
+  border-top: var(--borderWidth-M) solid var(--border_Decorative); }
+.field { display: flex; flex-direction: column; gap: var(--rk_spacing_1x); color: var(--contentPrimary); }
+.input { display: block; width: 100%; min-height: 72px; padding: var(--rk_spacing_3x) var(--rk_spacing_4x); resize: none;
+  border-radius: var(--radius-300); background: var(--backgroundElevation2); border: var(--borderWidth-M) solid var(--border_Functional);
+  color: var(--contentPrimary); transition: border-color .15s, box-shadow .15s; }
+.input:focus, .input:focus-visible { outline: none; border-color: var(--border_Focus); box-shadow: var(--elevation_focus); }
+.actions { display: flex; justify-content: flex-end; gap: var(--rk_spacing_2x); }
