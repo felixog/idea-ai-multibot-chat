@@ -1,0 +1,4 @@
+.root { display: inline-flex; align-items: center; flex: none; white-space: nowrap;
+  padding: var(--rk_spacing_half) var(--rk_spacing_2x); border-radius: var(--radius-100);
+  border: var(--borderWidth-M) solid var(--character-ring); background: var(--character-tag-bg);
+  color: var(--character-tag-ink); }

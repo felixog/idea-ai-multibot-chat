@@ -1,0 +1,5 @@
+.root { display: inline-flex; align-items: center; gap: var(--rk_spacing_1x); flex: none; white-space: nowrap;
+  padding: var(--rk_spacing_half) var(--rk_spacing_2x); border-radius: var(--radius-100);
+  border: var(--borderWidth-M) solid; }
+.ai { background: var(--dreamsLightest); border-color: var(--borderAction_Default); color: var(--contentAction_Default); }
+.constructive { background: var(--backgroundConstructive); border-color: var(--borderConstructive_Default); color: var(--contentConstructive); }

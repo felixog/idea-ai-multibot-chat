@@ -23,3 +23,13 @@ Other phase 1 notes:
 - lucide-react resolved to 1.59.0 (brief: 0.400 or later). All 31 icons in the icon table exist.
 - ESLint pinned to 9 with `@eslint/js@9`; `@eslint/js@10` requires ESLint 10, which `eslint-plugin-react-hooks@5` does not support yet.
 - Playwright 1.64 expects a newer headless shell than the container has; `playwright.config.ts` points at the preinstalled `/opt/pw-browsers/chromium` instead of downloading.
+
+## Phase 2: primitives
+
+| # | Topic | Brief | Figma | Chosen | Why |
+| --- | --- | --- | --- | --- | --- |
+| 7 | Avatar ring (md, lg) | `box-shadow` ring outside the layout box on a cream pad; md takes 32 in layout | 62:25: 2px `--character-ring` border, 2px padding, `--character-tag-bg` fill; md is 36 in layout, lg 48 | Figma | Visual. md reads 36 exactly as the brief describes, it just occupies 36 in layout, which also fits the 36 avatar column. |
+| 8 | Avatar xs, sm | no ring | 1px `--character-ring` border (xs 18, sm 22) | Figma | Visual. The AddresseeChip therefore measures 28 tall, not 26. |
+| 9 | Avatar alt text | alt = name | n/a | alt = name by default; `decorative` (alt="") where the name is printed next to it | Avoids "Nova Nova" in screen readers. |
+| 10 | TypingIndicator | a bot ChatMessage with dots | n/a | `TypingDots` lives in TypingIndicator/; the full row composes ChatMessage in phase 4 | ChatMessage is a phase 4 component. |
+| 11 | Toast on mobile | 16 above the composer dock | n/a | fixed offset `calc(120px + 16px)`, `// TODO(spec)` | Dock height varies with the picker; revisit if it overlaps. |

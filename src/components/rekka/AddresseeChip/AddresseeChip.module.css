@@ -1,0 +1,12 @@
+.root { position: relative; display: inline-flex; align-items: center; gap: var(--rk_spacing_1x); flex: none;
+  padding: var(--rk_spacing_half) var(--rk_spacing_2x) var(--rk_spacing_half) var(--rk_spacing_half);
+  border-radius: var(--radius-full); border: var(--borderWidth-M) solid var(--character-ring);
+  background: var(--character-tag-bg); color: var(--character-tag-ink); cursor: pointer;
+  transition: box-shadow .15s; animation: rk-chip-in .14s cubic-bezier(.2,.8,.2,1); }
+/* Extend the hit area to 44 tall on touch without changing the look. */
+.root::after { content: ''; position: absolute; inset: -9px -2px; }
+.root:hover { box-shadow: 0 0 0 var(--borderWidth-M) var(--character-ring); }
+.root:focus-visible { box-shadow: var(--focusRing); }
+.shake { animation: rk-shake .3s ease-in-out; }
+@keyframes rk-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+@keyframes rk-chip-in { from { opacity: 0; } to { opacity: 1; } }

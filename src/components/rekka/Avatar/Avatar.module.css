@@ -1,0 +1,14 @@
+/* Figma 62:25: xs/sm carry a 1px ring border; md/lg a 2px ring with 2px padding on the tag colour. */
+.root { display: inline-flex; flex: none; border-radius: var(--radius-full);
+  border: var(--borderWidth-M) solid var(--character-ring); transition: filter .15s, opacity .15s; }
+.md, .lg { border-width: var(--borderWidth-L); padding: var(--rk_spacing_half); background: var(--character-tag-bg); }
+.img { border-radius: var(--radius-full); object-fit: cover; display: block; }
+.xs .img { width: var(--rk_size_4x); height: var(--rk_size_4x); }
+.sm .img { width: var(--rk_size_5x); height: var(--rk_size_5x); }
+.md .img { width: 28px; height: 28px; }
+.lg .img { width: 40px; height: 40px; }
+.muted { filter: grayscale(1); opacity: .6; }
+
+.stack { display: inline-flex; align-items: center; }
+.stack > :last-child { margin-left: -6px; position: relative; }
+.stackMobile > :last-child { margin-left: calc(-1 * var(--rk_spacing_2x)); }

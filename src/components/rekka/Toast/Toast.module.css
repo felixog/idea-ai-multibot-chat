@@ -1,0 +1,10 @@
+.root { position: fixed; left: 50%; bottom: var(--rk_spacing_6x); z-index: 60; transform: translateX(-50%);
+  display: flex; align-items: center; gap: var(--rk_spacing_3x); max-width: min(360px, calc(100vw - var(--rk_spacing_8x)));
+  padding: var(--rk_spacing_3x) var(--rk_spacing_4x); border-radius: var(--radius-300);
+  background: var(--backgroundDark); color: var(--contentPrimary_onColor); box-shadow: var(--elevation_2);
+  animation: rk-toast-in .16s cubic-bezier(.2,.8,.2,1); }
+/* Mobile: 16 above the composer dock (dock is roughly 120 tall in its idle state). TODO(spec): measure dock height live. */
+.mobile { bottom: calc(120px + var(--rk_spacing_4x)); }
+.action { flex: none; color: var(--contentSecondary_onColor); text-decoration: underline; cursor: pointer; border-radius: var(--radius-100); }
+.action:focus-visible { box-shadow: var(--focusRing); }
+@keyframes rk-toast-in { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }

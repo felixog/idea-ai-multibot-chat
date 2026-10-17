@@ -1,0 +1,8 @@
+.page { padding: var(--rk_spacing_8x); display: flex; flex-direction: column; gap: var(--rk_spacing_8x); }
+.block { display: flex; flex-direction: column; gap: var(--rk_spacing_3x); }
+.label { color: var(--contentTetiary); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rk_spacing_4x); padding: var(--rk_spacing_4x);
+  background: var(--backgroundElevation_Alt); border-radius: var(--radius-300); }
+.col { display: flex; flex-direction: column; gap: var(--rk_spacing_4x); padding: var(--rk_spacing_4x);
+  background: var(--backgroundElevation_Alt); border-radius: var(--radius-300); max-width: 560px; }
+.toastHost { position: relative; flex: 1 1 320px; height: 72px; transform: translateZ(0); }

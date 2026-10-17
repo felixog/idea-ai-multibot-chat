@@ -1,0 +1,9 @@
+.dots { display: inline-flex; gap: var(--rk_spacing_2x); padding: var(--rk_spacing_2x) 0; }
+.dot { width: var(--rk_spacing_2x); height: var(--rk_spacing_2x); border-radius: var(--radius-full);
+  background: var(--border_Functional); animation: rk-typing 1.2s ease-in-out infinite; }
+.dot:nth-child(2) { animation-delay: .2s; }
+.dot:nth-child(3) { animation-delay: .4s; }
+@keyframes rk-typing {
+  0%, 60%, 100% { background: var(--border_Functional); transform: none; }
+  30% { background: var(--contentTetiary); transform: translateY(-2px); }
+}
