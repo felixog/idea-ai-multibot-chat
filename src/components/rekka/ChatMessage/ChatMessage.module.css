@@ -11,6 +11,7 @@
 .bubble { align-self: flex-start; max-width: var(--layout-bubble-max); padding: var(--rk_spacing_3x) var(--rk_spacing_4x);
   border-radius: var(--radius-300); background: var(--backgroundElevation1); box-shadow: var(--elevation_half); color: var(--contentPrimary);
   overflow-wrap: anywhere; }
+.fill { align-self: stretch; max-width: none; }
 .media { width: 100%; }
 
 .mention { text-decoration: underline; text-decoration-color: var(--character-ring); text-decoration-thickness: 2px; text-underline-offset: 3px; }

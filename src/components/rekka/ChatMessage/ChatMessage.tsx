@@ -35,9 +35,11 @@ interface ChatMessageProps {
   bubble?: ReactNode;
   media?: ReactNode;
   label?: string;
+  /** Mobile shell: the bot bubble fills the message width (Figma Tablet 744 and Mobile 390). */
+  fill?: boolean;
 }
 
-export function ChatMessage({ sender, showHeader, text = '', time, bubble, media, label }: ChatMessageProps) {
+export function ChatMessage({ sender, showHeader, text = '', time, bubble, media, label, fill = false }: ChatMessageProps) {
   if (sender === 'user') {
     return (
       <article className={s.user} aria-label={label ?? `You, ${time}`}>
@@ -59,7 +61,7 @@ export function ChatMessage({ sender, showHeader, text = '', time, bubble, media
             {time && <span className={`body_tiny ${s.time}`}>{time}</span>}
           </div>
         )}
-        <div className={`body ${s.bubble}`}>{bubble ?? <MessageText text={text} />}</div>
+        <div className={cx('body', s.bubble, fill && s.fill)}>{bubble ?? <MessageText text={text} />}</div>
         {media && <div className={s.media}>{media}</div>}
       </div>
     </article>

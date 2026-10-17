@@ -11,9 +11,10 @@ export function readCapture(params: URLSearchParams): CaptureOptions | null {
   return { mentioning: params.get('state') === 'mentioning' };
 }
 
+/** Mentioning matches the Figma Tablet and Mobile frames: "@I" typed, picker showing Iris (selected), Nova and @all. */
 export function captureState(opts: CaptureOptions): ChatState {
   const s = seedState();
   const base = { ...s, ui: { ...s.ui, editFocus: COVER_ID } };
   if (!opts.mentioning) return base;
-  return { ...base, ui: { ...base.ui, editFocus: null }, draft: '@I', picker: { open: true, query: 'I', index: 0 }, addressees: ['iris'] };
+  return { ...base, ui: { ...base.ui, editFocus: null }, draft: '@I', picker: { open: true, query: '', index: 0 }, addressees: ['iris'] };
 }

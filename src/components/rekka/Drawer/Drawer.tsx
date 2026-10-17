@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { cx } from '../../../lib/cx';
 import s from './Drawer.module.css';
@@ -22,6 +22,11 @@ export function Drawer({ open, onOpenChange, side, title, children, container }:
   const [dragY, setDragY] = useState(0);
   const start = useRef<number | null>(null);
   const sheet = side === 'bottom';
+  // The triggers live outside Radix (the store opens these), so remember what had focus and return to it on close.
+  const returnTo = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    if (open) returnTo.current = document.activeElement as HTMLElement | null;
+  }, [open]);
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -30,6 +35,10 @@ export function Drawer({ open, onOpenChange, side, title, children, container }:
         <Dialog.Content
           className={cx(s.panel, s[side], container && s.contained)}
           aria-describedby={undefined}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            returnTo.current?.focus();
+          }}
           style={dragY ? { transform: `translateY(${dragY}px)`, transition: 'none' } : undefined}
         >
           {sheet ? (

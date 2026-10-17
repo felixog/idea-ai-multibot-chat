@@ -20,6 +20,6 @@
 .playhead { position: absolute; top: calc(-1 * 6px); width: var(--rk_size_4x); height: var(--rk_size_5x);
   border-radius: var(--radius-full); background: var(--sunsetDark); cursor: grab; }
 .playhead:focus-visible { box-shadow: var(--focusRing); }
-@container mediacard (max-width: 267.98px) {
+@container mediacard (max-width: 247.98px) {
   .stage { height: 160px; }
 }

@@ -58,3 +58,17 @@ Other phase 1 notes:
 | 24 | Re-opening Trim | "seed selection the first time, otherwise the full length" | n/a | re-opens on the current trim (or the seed selection) | Keeps the saved trim visible when adjusting it; Cancel keeps it. |
 | 25 | Edit field focus on load | focused when editing opens | desktop shows the cover's field focused | focus only when the person opens editing; capture mode focuses it to match Figma | Stealing focus into the middle of the thread on load would hurt keyboard users. |
 | 26 | Reply engine | typing 900 to 1400ms, 600ms between characters | n/a | one global queue; a muted character's queued reply is dropped, even mid-typing | "Replies never overlap" across triggers too. |
+
+## Phase 5: shell and responsive
+
+| # | Topic | Brief | Figma | Chosen | Why |
+| --- | --- | --- | --- | --- | --- |
+| 27 | Mobile message list spacing | padding 16, gap 12 | 82:9038: column at x 24, gaps 16, bottom 24 | padding 24, gap 16 (same as desktop) | Visual. Cards span x 72 to 366 at 390, as in Figma. |
+| 28 | Compact media threshold | card < 300px | at 390 the card is 294 and Figma keeps the full 236 stage and full toolbar | compact when the card is < 280px (content < 248) | Keeps 390 identical to Figma; a 320px phone (card 224) still gets compact. |
+| 29 | Tiny text in the mobile shell | 10/12 only under 577px | Tablet 744 header and system lines use 10/12 | the mobile shell root carries `is-small` at every width | Visual; Figma's mobile shell uses the Small Screen mode. |
+| 30 | Bot bubble width on mobile | hug, max 560 | inconsistent: the hook reply hugs; two later bubbles fill the column (overrides) | hug, as in the ChatMessage component | Follows the component, not the per-instance overrides. Costs about 1% in the tablet diff. |
+| 31 | Mentioning capture | `@I` filters to Iris | Tablet and Mobile frames show Iris, Nova and @all with "@I" typed | Real typing filters by prefix; `?state=mentioning` reproduces the frame (query empty, draft "@I") | Brief's filter rule is behaviour; the frame is a visual. |
+| 32 | Mobile capture height | root height auto | frames are 2159 tall, clipped at the top, anchored to the composer | mobile and tablet captures keep the fixed-height app shell (viewport 2159), scrolled to the newest message | Reproduces the frame geometry. |
+| 33 | Drawer focus return | focus returns to the trigger | n/a | Drawer remembers the focused element when it opens and restores it | The store opens drawers, so Radix has no Trigger to return to. |
+
+Visual diff after phase 5 (pixelmatch, threshold 0.1): desktop 0.76%, tablet 4.79%, mobile 6.02%. The tablet and mobile remainder is a 2px taller mention picker title (18 in Figma at 10/12 type) that shifts the bottom-anchored thread, Figma wrapping "Want a 6 second loop for the teaser?" onto two lines where the browser fits one, and the raster video still in Figma vs the SVG poster here.

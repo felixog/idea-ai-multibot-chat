@@ -3,8 +3,8 @@
 .title { padding: var(--rk_spacing_1x) var(--rk_spacing_2x); color: var(--contentTetiary); }
 .list { display: flex; flex-direction: column; gap: var(--rk_spacing_half); margin: 0; padding: 0; list-style: none; }
 .option { display: flex; align-items: center; gap: var(--rk_spacing_3x); min-height: 52px; padding: var(--rk_spacing_2x);
-  border-radius: var(--radius-200); border: var(--borderWidth-M) solid transparent; cursor: pointer; }
-.selected { background: var(--backgroundElevation_Alt); border-color: var(--border_Focus); }
+  border-radius: var(--radius-200); cursor: pointer; }
+.selected { background: var(--backgroundElevation_Alt); border: var(--borderWidth-M) solid var(--border_Focus); }
 .text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .name { color: var(--contentPrimary); }
 .spec { color: var(--contentSecondary); }

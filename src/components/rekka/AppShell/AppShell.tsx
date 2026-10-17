@@ -39,7 +39,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container }:
 
   if (mobile) {
     return (
-      <div className={cx(s.mobileRoot, capture && s.capture)}>
+      <div className={cx(s.mobileRoot, 'is-small')}>
         {skip}
         <ThreadHeader
           ref={castTrigger}
@@ -51,7 +51,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container }:
           onOpenChats={() => chat.setChatsOpen(true)}
         />
         <main className={s.mobileMain}>
-          <ChatThread layout="mobile" capture={capture} />
+          <ChatThread layout="mobile" />
           <div className={s.mobileDock}>
             <Composer layout="mobile" />
           </div>

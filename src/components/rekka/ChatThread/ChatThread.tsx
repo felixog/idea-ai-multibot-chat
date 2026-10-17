@@ -28,14 +28,14 @@ function MessageMedia({ mediaId }: { mediaId: string }) {
   return <EditCard ref={ref} media={m} target={target} actions={chat} />;
 }
 
-function Item({ item, items, index }: { item: ThreadItem; items: ThreadItem[]; index: number }) {
+function Item({ item, items, index, fill }: { item: ThreadItem; items: ThreadItem[]; index: number; fill: boolean }) {
   switch (item.kind) {
     case 'day':
       return <DayDivider label={item.label} />;
     case 'system':
       return <SystemLine icon={item.icon} text={item.text} />;
     case 'typing':
-      return <ChatMessage sender={item.character} showHeader bubble={<TypingDots character={item.character} />} label={`${CAST[item.character].name} is typing`} />;
+      return <ChatMessage sender={item.character} showHeader bubble={<TypingDots character={item.character} />} label={`${CAST[item.character].name} is typing`} fill={fill} />;
     case 'message':
       return (
         <ChatMessage
@@ -43,6 +43,7 @@ function Item({ item, items, index }: { item: ThreadItem; items: ThreadItem[]; i
           showHeader={showsHeader(items, index)}
           text={item.text}
           time={item.time}
+          fill={fill}
           media={item.mediaId ? <MessageMedia mediaId={item.mediaId} /> : undefined}
         />
       );
@@ -92,7 +93,7 @@ export function ChatThread({ layout, capture = false }: { layout: 'desktop' | 'm
       >
         <div className={s.column}>
           {items.map((item, i) => (
-            <Item key={item.id} item={item} items={items} index={i} />
+            <Item key={item.id} item={item} items={items} index={i} fill={false} />
           ))}
         </div>
       </div>

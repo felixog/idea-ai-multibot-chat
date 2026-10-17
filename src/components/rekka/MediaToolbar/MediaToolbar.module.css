@@ -1,8 +1,8 @@
 .root { display: flex; align-items: center; justify-content: space-between; gap: var(--rk_spacing_2x); width: 100%; }
 .full { display: flex; align-items: center; gap: var(--rk_spacing_1x); }
 .compact { position: relative; display: none; }
-/* Compact when the card is narrower than 300px (content box 268). */
-@container mediacard (max-width: 267.98px) {
+/* Compact when the card is narrower than 280px (content box 248); a 390 phone card (294) stays full as in Figma. */
+@container mediacard (max-width: 247.98px) {
   .full { display: none; }
   .compact { display: block; }
 }
