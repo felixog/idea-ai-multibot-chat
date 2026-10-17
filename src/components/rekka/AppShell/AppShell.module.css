@@ -11,6 +11,9 @@
   border-top: var(--borderWidth-M) solid var(--border_Decorative); background: var(--backgroundBlur);
   backdrop-filter: blur(var(--rk_bg_blur_default)); -webkit-backdrop-filter: blur(var(--rk_bg_blur_default)); }
 
+/* Phone preview: fill the 390 x 844 frame. */
+.contained { height: 100%; }
+
 /* Capture mode (?capture=full): the page grows to the content so it matches the full-length Figma frames. */
 .capture { height: auto; min-height: 100dvh; }
 .capture .thread, .capture .mobileMain { min-height: 0; }

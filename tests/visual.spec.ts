@@ -24,7 +24,14 @@ for (const screen of SCREENS) {
     await page.waitForTimeout(300);
     const local = `tests/output/${screen.name}.png`;
     await page.screenshot({ path: local, fullPage: true, animations: 'disabled', caret: 'hide' });
-    const r = compare(local, figma, `tests/output/${screen.name}-diff.png`);
+    // Artwork is masked: Figma renders raster fills, the brief requires the SVG originals (docs/DECISIONS.md #34).
+    const masks = await page.$$eval('[data-visual-mask]', (els) =>
+      els.map((e) => {
+        const r = e.getBoundingClientRect();
+        return { x: r.x + window.scrollX, y: r.y + window.scrollY, width: r.width, height: r.height };
+      }),
+    );
+    const r = compare(local, figma, `tests/output/${screen.name}-diff.png`, masks);
     console.log(`${screen.name}: ${(r.ratio * 100).toFixed(2)}% differ, worst 24px cell ${(r.worstCell * 100).toFixed(0)}% filled, height ${r.heights.local} vs ${r.heights.figma}`);
     expect.soft(Math.abs(r.heights.local - (screen.height ?? r.heights.figma)), 'page height within 8px').toBeLessThanOrEqual(8);
     expect(r.ratio, 'under 2% of pixels differ').toBeLessThan(0.02);

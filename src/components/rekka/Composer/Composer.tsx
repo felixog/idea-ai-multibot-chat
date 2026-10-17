@@ -14,6 +14,8 @@ const MAX_HEIGHT = 168;
 
 export function Composer({ layout }: { layout: 'desktop' | 'mobile' }) {
   const chat = useChat();
+  const chatRef = useRef(chat);
+  chatRef.current = chat;
   const { draft, picker, addressees, muted, ui } = chat.state;
   const input = useRef<HTMLTextAreaElement>(null);
   const pendingCaret = useRef<number | null>(null);
@@ -34,9 +36,15 @@ export function Composer({ layout }: { layout: 'desktop' | 'mobile' }) {
 
   // Demo affordance and keyboard paths ask for focus through this event.
   useEffect(() => {
-    const onFocus = () => input.current?.focus();
-    window.addEventListener('rk:focus-composer', onFocus);
-    return () => window.removeEventListener('rk:focus-composer', onFocus);
+    const onStart = () => {
+      const el = input.current;
+      if (!el) return;
+      el.scrollIntoView({ block: 'nearest' });
+      pendingCaret.current = chatRef.current.startMention(el.value.length);
+      el.focus();
+    };
+    window.addEventListener('rk:start-mention', onStart);
+    return () => window.removeEventListener('rk:start-mention', onStart);
   }, []);
 
   const caret = () => input.current?.selectionEnd ?? draft.length;

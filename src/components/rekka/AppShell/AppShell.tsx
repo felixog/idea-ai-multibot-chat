@@ -19,9 +19,11 @@ interface AppShellProps {
   sidebarExtra?: ReactNode;
   /** Overlay container when rendered inside the phone preview frame. */
   container?: HTMLElement | null;
+  /** Fill the parent (phone preview) instead of the viewport. */
+  contained?: boolean;
 }
 
-export function AppShell({ capture = false, demoCard, sidebarExtra, container }: AppShellProps) {
+export function AppShell({ capture = false, demoCard, sidebarExtra, container, contained = false }: AppShellProps) {
   const chat = useChat();
   const layout = useLayout();
   const { ui, muted } = chat.state;
@@ -39,7 +41,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container }:
 
   if (mobile) {
     return (
-      <div className={cx(s.mobileRoot, 'is-small')}>
+      <div className={cx(s.mobileRoot, 'is-small', contained && s.contained)}>
         {skip}
         <ThreadHeader
           ref={castTrigger}
@@ -68,7 +70,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container }:
   }
 
   return (
-    <div className={cx(s.webRoot, capture && s.capture)}>
+    <div className={cx(s.webRoot, capture && s.capture, contained && s.contained)}>
       {skip}
       <Sidebar footer={demoCard} headerExtra={sidebarExtra} />
       <main className={s.thread}>

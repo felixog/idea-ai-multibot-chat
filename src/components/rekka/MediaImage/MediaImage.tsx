@@ -35,7 +35,7 @@ export const MediaImage = forwardRef<HTMLElement, Props>(function MediaImage({ m
         </>
       ) : (
         <>
-          <img className={s.image} src={m.src} alt={COVER_ALT} style={{ filter: m.filter ?? undefined }} />
+          <img data-visual-mask className={s.image} src={m.src} alt={COVER_ALT} style={{ filter: m.filter ?? undefined }} />
           {m.changes.length > 0 && <ChangeList changes={m.changes} onToggle={(cid) => a.toggleChange(m.id, cid)} />}
           {m.state === 'editing' ? (
             <EditSlot

@@ -11,7 +11,8 @@
     "check:tokens": "node scripts/check-tokens.mjs",
     "test:a11y": "playwright test tests/a11y.spec.ts",
     "test:visual": "playwright test tests/visual.spec.ts",
-    "check": "npm run lint && npm run check:tokens && npm run build && npm run test:a11y && npm run test:visual"
+    "check": "npm run lint && npm run check:tokens && npm run build && npm run test:a11y && npm run test:interactions && npm run test:visual",
+    "test:interactions": "playwright test tests/interactions.spec.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.1",

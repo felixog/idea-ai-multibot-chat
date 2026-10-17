@@ -1,4 +1,4 @@
-import { forwardRef, useRef, type KeyboardEvent } from 'react';
+import { forwardRef } from 'react';
 import { Check, CircleCheck, Sparkles, Undo2, WandSparkles } from 'lucide-react';
 import type { EditCardMedia, ImageMedia, MediaActions, VideoMedia } from '../../../features/chat/types';
 import { cx } from '../../../lib/cx';
@@ -8,6 +8,7 @@ import { mss } from '../../../lib/time';
 import { AgentSteps } from '../AgentSteps/AgentSteps';
 import { Button } from '../Button/Button';
 import { ChangeList } from '../ChangeItem/ChangeItem';
+import { Segmented } from '../Segmented/Segmented';
 import { StatusBadge } from '../StatusBadge/StatusBadge';
 import s from './EditCard.module.css';
 
@@ -26,16 +27,6 @@ export const EditCard = forwardRef<HTMLElement, Props>(function EditCard({ media
   const src = video ? POSTER_SRC : (target as ImageMedia).src;
   const before = video ? 6 : 0;
   const after = video ? 4.6 : 0;
-  const pairRef = useRef<Array<HTMLButtonElement | null>>([]);
-
-  const onPairKey = (ev: KeyboardEvent) => {
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(ev.key)) {
-      ev.preventDefault();
-      const next = e.view === 'after' ? 'before' : 'after';
-      a.setEditView(e.id, next);
-      pairRef.current[next === 'before' ? 0 : 1]?.focus();
-    }
-  };
 
   return (
     <article ref={ref} role="group" aria-label={`Edit: ${title}`} className={cx(s.root, e.status === 'applied' && s.applied)}>
@@ -63,22 +54,15 @@ export const EditCard = forwardRef<HTMLElement, Props>(function EditCard({ media
             <AgentSteps title={`Making your ${video ? 'video' : 'image'}`} percent={e.percent} stepIndex={e.stepIndex} steps={e.steps} />
           ) : (
             <>
-              <div role="radiogroup" aria-label="Compare" className={s.pair} onKeyDown={onPairKey}>
-                {(['before', 'after'] as const).map((v, i) => (
-                  <button
-                    key={v}
-                    ref={(el) => (pairRef.current[i] = el)}
-                    type="button"
-                    role="radio"
-                    aria-checked={e.view === v}
-                    tabIndex={e.view === v ? 0 : -1}
-                    className={cx('body_small_bold', s.seg, e.view === v && s.segOn)}
-                    onClick={() => a.setEditView(e.id, v)}
-                  >
-                    {v === 'before' ? 'Before' : 'After'}
-                  </button>
-                ))}
-              </div>
+              <Segmented
+                label="Compare"
+                value={e.view}
+                onChange={(v) => a.setEditView(e.id, v)}
+                options={[
+                  { value: 'before', label: 'Before' },
+                  { value: 'after', label: 'After' },
+                ]}
+              />
               <ChangeList changes={e.changes} onToggle={(cid) => a.toggleChange(e.id, cid)} />
             </>
           )}

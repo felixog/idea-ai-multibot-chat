@@ -12,3 +12,5 @@
 .allIcon { display: grid; place-items: center; flex: none; width: var(--rk_size_7x); height: var(--rk_size_7x); margin: 0 var(--rk_spacing_1x);
   border-radius: var(--radius-full); background: var(--backgroundElevation_Alt200); color: var(--contentPrimary); }
 .empty { cursor: default; color: var(--contentTetiary); }
+/* Small-screen type: the label row is 18 tall in the Figma Tablet and Mobile frames. */
+:global(.is-small) .title { padding: 3px var(--rk_spacing_2x); }

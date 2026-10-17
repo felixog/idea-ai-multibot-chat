@@ -91,11 +91,11 @@ export function TrimEditor({ variant, duration, range, min, step, onChange, onSa
       )}
       <div className={`body_tiny tabular ${s.times}`}>
         <span>
-          <span className={s.muted}>Start</span> {mss(range.start, tenths)}
+          <span className={s.muted}>Start</span> {mss(range.start, tenths || !Number.isInteger(range.start))}
         </span>
         <span className={s.muted}>{secs(range.end - range.start)}s selected</span>
         <span>
-          <span className={s.muted}>End</span> {mss(range.end, tenths)}
+          <span className={s.muted}>End</span> {mss(range.end, tenths || !Number.isInteger(range.end))}
         </span>
       </div>
       <div className={s.actions}>

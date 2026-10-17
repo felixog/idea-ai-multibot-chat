@@ -1,0 +1,6 @@
+.stage { display: flex; flex-direction: column; align-items: center; gap: var(--rk_spacing_3x); min-height: 100dvh;
+  padding: var(--rk_spacing_6x) var(--rk_spacing_4x); background: var(--backgroundElevation0); }
+/* transform makes the frame the containing block for the app's fixed toast and drawers. */
+.frame { position: relative; width: 390px; height: 844px; max-width: 100%; overflow: hidden; transform: translateZ(0);
+  border: var(--borderWidth-M) solid var(--border_Decorative); border-radius: var(--radius-300); box-shadow: var(--elevation_3);
+  background: var(--backgroundElevation0); }

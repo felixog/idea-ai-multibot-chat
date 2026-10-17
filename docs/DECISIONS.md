@@ -72,3 +72,17 @@ Other phase 1 notes:
 | 33 | Drawer focus return | focus returns to the trigger | n/a | Drawer remembers the focused element when it opens and restores it | The store opens drawers, so Radix has no Trigger to return to. |
 
 Visual diff after phase 5 (pixelmatch, threshold 0.1): desktop 0.76%, tablet 4.79%, mobile 6.02%. The tablet and mobile remainder is a 2px taller mention picker title (18 in Figma at 10/12 type) that shifts the bottom-anchored thread, Figma wrapping "Want a 6 second loop for the teaser?" onto two lines where the browser fits one, and the raster video still in Figma vs the SVG poster here.
+
+## Phase 6: interactions
+
+| # | Topic | Brief | Figma | Chosen | Why |
+| --- | --- | --- | --- | --- | --- |
+| 34 | Visual diff masking | compare whole screens | Figma renders raster image fills for the art | the visual test blanks `[data-visual-mask]` regions (avatars, cover, video stage, Made in this chat thumbnails) in both images | The brief requires the SVG originals, so the art can never match the rasters pixel for pixel; the test measures the UI around it. |
+| 35 | Waveform layout | flex, gap 4 | bars keep 6px and overlap in tight regions | bars positioned edge to edge by index | Visual; at 390 the selection is narrower than 28 bars need. |
+| 36 | Picker label on small type | 4 8 padding | 18 tall in the Tablet and Mobile frames | 3px 8px under `.is-small` | Visual (2px). |
+| 37 | Mentioning capture focus | n/a | message box shown focused | `?state=mentioning` focuses the message box | Visual. |
+| 38 | Segmented | EditCard pair and demo pair styled alike | n/a | one `Segmented` component used by both | Same visual, one implementation. |
+| 39 | Checklist row 5 (mute) | scroll to and highlight | n/a | web: focuses the first Mute button in the cast panel; narrower: opens the cast drawer or sheet | The panel is always visible at 1280 and up. |
+| 40 | Extra test file | a11y + visual | n/a | `tests/interactions.spec.ts` (6 flows) added to `npm run check` | Covers states the keyboard path does not: video trim undo/redo, video EditCard, regenerate, last chip, muted replies, phone preview, Reset. |
+
+Visual diff after phase 6 (artwork masked): desktop 0.63%, tablet 1.92%, mobile 1.87%, heights 2159 / 2159 / 2159.

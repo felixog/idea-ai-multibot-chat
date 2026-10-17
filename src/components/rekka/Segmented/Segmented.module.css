@@ -1,0 +1,6 @@
+.root { display: flex; gap: var(--rk_spacing_1x); }
+.seg { padding: var(--rk_spacing_1x) var(--rk_spacing_3x); border-radius: var(--radius-200); cursor: pointer; white-space: nowrap;
+  background: var(--backgroundElevation1); border: var(--borderWidth-M) solid var(--border_Decorative); color: var(--contentPrimary);
+  transition: background-color .15s; }
+.on { background: var(--backgroundElevation_Alt200); border-color: transparent; }
+.seg:focus-visible { box-shadow: var(--focusRing); }

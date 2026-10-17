@@ -12,8 +12,8 @@ import s from './MadeItem.module.css';
 export function MadeItem({ media: m, onClick }: { media: AudioMedia | ImageMedia | VideoMedia; onClick: () => void }) {
   const meta = `${CAST[m.owner].name} · ${madeMeta(m)}`;
   return (
-    <button type="button" className={s.root} onClick={onClick} aria-label={`${m.title}, ${meta}. Show in chat`}>
-      <span className={cx(s.thumb, m.kind === 'audio' && s.audio)}>
+    <button type="button" className={s.root} onClick={onClick}>
+      <span className={cx(s.thumb, m.kind === 'audio' && s.audio)} data-visual-mask={m.kind === 'audio' ? undefined : true}>
         {m.kind === 'audio' && <Waveform bars={CUT_4} tone="light" />}
         {m.kind === 'image' && <img className={s.art} src={m.src} alt="" style={{ filter: m.filter ?? undefined }} />}
         {m.kind === 'video' && (
@@ -32,6 +32,7 @@ export function MadeItem({ media: m, onClick }: { media: AudioMedia | ImageMedia
           {meta}
         </span>
       </span>
+      <span className="visually-hidden">, show in chat</span>
       <Icon icon={ChevronRight} size={16} className={s.chevron} />
     </button>
   );

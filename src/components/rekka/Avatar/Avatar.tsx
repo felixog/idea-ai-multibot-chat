@@ -17,7 +17,7 @@ export function Avatar({ character, size, decorative = false, muted = false, cla
   const c = CAST[character];
   return (
     <span data-character={c.bot} className={cx(s.root, s[size], muted && s.muted, className)}>
-      <img className={s.img} src={c.avatar} alt={decorative ? '' : c.name} draggable={false} />
+      <img data-visual-mask className={s.img} src={c.avatar} alt={decorative ? '' : c.name} draggable={false} />
     </span>
   );
 }

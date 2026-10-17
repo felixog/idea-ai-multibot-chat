@@ -26,7 +26,7 @@ export function VideoPlayer(p: VideoPlayerProps) {
   const progress = p.duration > 0 ? Math.min(1, p.current / p.duration) : 0;
   return (
     <div className={cx(s.root, p.size === 'compact' && s.compact)}>
-      <div className={s.stage}>
+      <div className={s.stage} data-visual-mask>
         <span
           className={cx(s.poster, p.playing && s.moving)}
           style={{ backgroundImage: `url(${p.poster})`, filter: p.filter ?? undefined }}
