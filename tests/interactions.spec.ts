@@ -1,9 +1,20 @@
 import { test, expect } from '@playwright/test';
 
+let consoleProblems: string[] = [];
+
 test.beforeEach(async ({ page }) => {
+  consoleProblems = [];
+  page.on('console', (m) => {
+    if (m.type() === 'error' || m.type() === 'warning') consoleProblems.push(`${m.type()}: ${m.text()}`);
+  });
+  page.on('pageerror', (e) => consoleProblems.push(`pageerror: ${e.message}`));
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   await page.evaluate(() => document.fonts.ready);
+});
+
+test.afterEach(() => {
+  expect(consoleProblems, 'no console errors or warnings').toEqual([]);
 });
 
 test('video trim, undo and redo', async ({ page }) => {
@@ -89,4 +100,17 @@ test('phone preview renders the mobile shell in a 390 frame', async ({ page }) =
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Back to full view' }).click();
   await expect(page.getByRole('complementary', { name: 'Cast' })).toBeVisible();
+});
+
+test('reduced motion removes loops and transforms', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  const loop = page.getByRole('group', { name: 'Video: Teaser loop' });
+  await loop.getByRole('button', { name: 'Play teaser loop' }).first().click();
+  const poster = loop.locator('[data-visual-mask] > span').first();
+  expect(await poster.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  await page.locator('#message-box').fill('Sounds good');
+  await page.locator('#message-box').press('Enter');
+  const dot = page.getByRole('article', { name: /is typing/ }).locator('span[aria-hidden] > span').first();
+  expect(await dot.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
 });

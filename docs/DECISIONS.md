@@ -86,3 +86,4 @@ Visual diff after phase 5 (pixelmatch, threshold 0.1): desktop 0.76%, tablet 4.7
 | 40 | Extra test file | a11y + visual | n/a | `tests/interactions.spec.ts` (6 flows) added to `npm run check` | Covers states the keyboard path does not: video trim undo/redo, video EditCard, regenerate, last chip, muted replies, phone preview, Reset. |
 
 Visual diff after phase 6 (artwork masked): desktop 0.63%, tablet 1.92%, mobile 1.87%, heights 2159 / 2159 / 2159.
+| 41 | Compact video time label | n/a | n/a | hidden when the card is under 280px; the scrubber keeps a 48px minimum | At 320 the label left no room for the scrubber. The slider's aria-valuetext still gives the time. |

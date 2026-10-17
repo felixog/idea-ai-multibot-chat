@@ -14,7 +14,7 @@
   background: var(--backgroundElevation_Alt200); color: var(--contentPrimary); }
 .controls { display: flex; align-items: center; gap: var(--rk_spacing_3x); }
 .time { flex: none; color: var(--contentSecondary_onColor); }
-.track { position: relative; flex: 1; height: var(--rk_spacing_2x); border-radius: var(--radius-full);
+.track { position: relative; flex: 1; min-width: var(--rk_size_8x); height: var(--rk_spacing_2x); border-radius: var(--radius-full);
   background: var(--backgroundElevation_Alt300); cursor: pointer; touch-action: none; }
 .fill { position: absolute; inset: 0 auto 0 0; border-radius: var(--radius-full); background: var(--backgroundBrand); }
 .playhead { position: absolute; top: calc(-1 * 6px); width: var(--rk_size_4x); height: var(--rk_size_5x);
@@ -22,4 +22,6 @@
 .playhead:focus-visible { box-shadow: var(--focusRing); }
 @container mediacard (max-width: 247.98px) {
   .stage { height: 160px; }
+  /* Keep the scrubber usable in a narrow card; the slider's value text still reads the time. */
+  .time { display: none; }
 }
