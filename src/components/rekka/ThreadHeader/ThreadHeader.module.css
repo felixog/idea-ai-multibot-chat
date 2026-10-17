@@ -1,0 +1,12 @@
+.root { display: flex; align-items: center; gap: var(--rk_spacing_3x); flex: none; padding: var(--rk_spacing_4x) var(--rk_spacing_6x);
+  border-bottom: var(--borderWidth-M) solid var(--border_Decorative); }
+.mobile { position: sticky; top: 0; z-index: 10; gap: var(--rk_spacing_2x); padding: var(--rk_spacing_2x) var(--rk_spacing_3x);
+  background: var(--backgroundBlur); backdrop-filter: blur(var(--rk_bg_blur_default)); -webkit-backdrop-filter: blur(var(--rk_bg_blur_default)); }
+.titles { display: flex; flex-direction: column; gap: var(--rk_spacing_half); flex: 1; min-width: 0; }
+.title { color: var(--contentPrimary); }
+.mobile .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subtitle { color: var(--contentTetiary); }
+.stack { display: inline-flex; }
+.castButton { display: inline-flex; align-items: center; min-height: var(--layout-touch); padding: 0 var(--rk_spacing_1x);
+  border-radius: var(--radius-200); cursor: pointer; transition: background-color .15s; }
+.castButton:hover { background: var(--backgroundElevation_Alt); }

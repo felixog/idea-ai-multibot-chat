@@ -61,6 +61,8 @@ export interface VideoMedia extends MediaBase {
   pendingTrim: Range;
   current: number;
   muted: boolean;
+  /** Warm grade after an applied EditCard. */
+  filter: string | null;
 }
 
 export interface Step {
@@ -101,9 +103,11 @@ export interface ChatState {
   ui: {
     chatsOpen: boolean;
     castOpen: boolean;
-    toast: { id: number; message: string; action?: { label: string; kind: 'redo-apply' } } | null;
+    toast: { id: number; message: string } | null;
     highlightId: string | null;
     shakeKey: number;
+    /** Media whose edit field should take focus when it opens. */
+    editFocus: string | null;
   };
   demo: { done: string[]; dismissed: boolean };
   /** Phone 390 preview from the demo card. */

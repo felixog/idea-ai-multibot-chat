@@ -31,7 +31,7 @@ export function seedMedia(): Record<string, AudioMedia | ImageMedia | VideoMedia
       id: LOOP_ID, kind: 'video', owner: 'iris', title: 'Teaser loop', version: 1,
       prompt: 'Six second loop of the window lights, rain streaks, seamless, 16:9',
       changeDraft: '', changes: [], progress: idle,
-      state: 'default', fullDuration: 6, trim: null, pendingTrim: { ...SEED_TRIM.loop }, current: 0, muted: false,
+      state: 'default', fullDuration: 6, trim: null, pendingTrim: { ...SEED_TRIM.loop }, current: 0, muted: false, filter: null,
     },
   };
 }
@@ -57,7 +57,7 @@ export function seedState(): ChatState {
     muted: { nova: false, iris: false },
     draft: '',
     picker: { open: false, query: '', index: 0 },
-    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0 },
+    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0, editFocus: null },
     demo: { done: [], dismissed: false },
     preview: 'fit',
   };

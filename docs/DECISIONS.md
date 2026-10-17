@@ -46,3 +46,15 @@ Other phase 1 notes:
 | 17 | Types | brief's types | n/a | added `progress` to MediaBase, `steps` to EditCardMedia, `shakeKey` to `ui`, `preview` to state | Needed to render AgentSteps, the chip shake and the phone preview from state. |
 | 18 | Compact layout | container query < 300px | n/a | `container: mediacard` on the card; toolbar and stage switch at 268px content width | Same rule, card padding accounted for. |
 | 19 | Edit prompt on the hook | Nova regenerates in place for 2400ms, v2 | n/a | copy "Reworking the hook with your note. v2 coming up." `// TODO(spec)` | The brief gives no reply copy for this case. |
+
+## Phase 4: conversation and the static desktop
+
+| # | Topic | Brief | Figma | Chosen | Why |
+| --- | --- | --- | --- | --- | --- |
+| 20 | Desktop frame height | 1440 x 2159 | Desktop 1440 frame is 2135; its Main component (82:5289) is 2159 | Page is 2159; the visual test checks height against 2159 | The frame clips the composer dock's 24px bottom padding. Measured rows match Figma's message-list (82:5527) to the pixel. |
+| 21 | SystemLine role | `role="status"` | n/a | no role; the `role="log"` list announces it | A status region inside a live log would announce twice. |
+| 22 | Mention insertion | replaces `@query` with " @Iris  " | n/a | "@Iris " (one trailing space) | Avoids a double space in the sent message. |
+| 23 | Addressees from mentions | picking switches; two names address both | n/a | after a pick the addressees are every character named in the draft | Covers both rules in one place. |
+| 24 | Re-opening Trim | "seed selection the first time, otherwise the full length" | n/a | re-opens on the current trim (or the seed selection) | Keeps the saved trim visible when adjusting it; Cancel keeps it. |
+| 25 | Edit field focus on load | focused when editing opens | desktop shows the cover's field focused | focus only when the person opens editing; capture mode focuses it to match Figma | Stealing focus into the middle of the thread on load would hurt keyboard users. |
+| 26 | Reply engine | typing 900 to 1400ms, 600ms between characters | n/a | one global queue; a muted character's queued reply is dropped, even mid-typing | "Replies never overlap" across triggers too. |

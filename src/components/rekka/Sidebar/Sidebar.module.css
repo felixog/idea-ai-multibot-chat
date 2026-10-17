@@ -1,0 +1,8 @@
+.root { display: flex; flex-direction: column; gap: var(--rk_spacing_4x); flex: none; width: var(--layout-sidebar); height: 100%;
+  padding: var(--rk_spacing_6x) var(--rk_spacing_4x); border-right: var(--borderWidth-M) solid var(--border_Decorative); overflow-y: auto; }
+.inDrawer { width: 100%; border-right: 0; }
+.head { display: flex; align-items: center; justify-content: space-between; gap: var(--rk_spacing_2x); padding: 0 var(--rk_spacing_2x); }
+.title { color: var(--contentPrimary); }
+.headActions { display: flex; align-items: center; gap: var(--rk_spacing_1x); }
+.list { display: flex; flex-direction: column; gap: var(--rk_spacing_1x); }
+.footer { margin-top: auto; }

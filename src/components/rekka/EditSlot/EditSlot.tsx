@@ -41,7 +41,7 @@ export function EditSlot({ prompt, versionLabel, value, autoFocus = true, onChan
         <textarea
           ref={field}
           id={id}
-          rows={2}
+          rows={1}
           className={`body ${s.input}`}
           value={value}
           onChange={(e) => onChange(e.target.value)}

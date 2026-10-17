@@ -1,0 +1,20 @@
+.webRoot { display: flex; height: 100dvh; background: var(--backgroundElevation0); }
+.thread { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.dock { display: flex; justify-content: center; flex: none; padding: 0 var(--rk_spacing_6x) var(--rk_spacing_6x); }
+.dockColumn { width: 100%; max-width: var(--layout-thread-column); }
+.cast { display: flex; flex-direction: column; flex: none; width: var(--layout-cast); height: 100%; padding: var(--rk_spacing_6x);
+  border-left: var(--borderWidth-M) solid var(--border_Decorative); overflow-y: auto; }
+
+.mobileRoot { display: flex; flex-direction: column; height: 100dvh; background: var(--backgroundElevation0); }
+.mobileMain { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.mobileDock { flex: none; padding: var(--rk_spacing_2x) var(--rk_spacing_4x) var(--rk_spacing_4x);
+  border-top: var(--borderWidth-M) solid var(--border_Decorative); background: var(--backgroundBlur);
+  backdrop-filter: blur(var(--rk_bg_blur_default)); -webkit-backdrop-filter: blur(var(--rk_bg_blur_default)); }
+
+/* Capture mode (?capture=full): the page grows to the content so it matches the full-length Figma frames. */
+.capture { height: auto; min-height: 100dvh; }
+.capture .thread, .capture .mobileMain { min-height: 0; }
+
+.skip { position: absolute; left: var(--rk_spacing_2x); top: var(--rk_spacing_2x); z-index: 70; padding: var(--rk_spacing_2x) var(--rk_spacing_3x);
+  border-radius: var(--radius-200); background: var(--backgroundDark); color: var(--contentPrimary_onColor); transform: translateY(-200%); }
+.skip:focus { transform: none; }

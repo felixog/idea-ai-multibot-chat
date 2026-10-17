@@ -1,0 +1,7 @@
+.wrap { position: relative; display: flex; flex: 1; min-height: 0; }
+.list { display: flex; flex: 1; justify-content: center; min-height: 0; overflow-y: auto; padding: var(--rk_spacing_6x); outline: none; }
+.column { display: flex; flex-direction: column; align-items: center; gap: var(--rk_spacing_4x); width: 100%; max-width: var(--layout-thread-column); }
+.mobile { padding: var(--rk_spacing_4x); }
+.mobile .column { gap: var(--rk_spacing_3x); margin-top: auto; }
+.capture { overflow: visible; }
+.pill { position: absolute; left: 50%; bottom: var(--rk_spacing_4x); transform: translateX(-50%); z-index: 5; }

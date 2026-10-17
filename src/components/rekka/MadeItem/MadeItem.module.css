@@ -1,0 +1,14 @@
+.root { display: flex; align-items: center; gap: var(--rk_spacing_3x); width: 100%; padding: var(--rk_spacing_3x); text-align: left;
+  cursor: pointer; transition: background-color .15s; }
+.root:hover { background: var(--backgroundElevation_Alt); }
+.root:focus-visible { box-shadow: inset 0 0 0 2px var(--border_Focus); }
+.thumb { position: relative; display: grid; place-items: center; flex: none; width: 56px; height: 56px; overflow: hidden;
+  border-radius: var(--radius-200); background: var(--backgroundDark); }
+.audio { padding: var(--rk_spacing_3x); background: var(--backgroundBrand); }
+.art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.play { position: relative; display: grid; place-items: center; width: var(--rk_size_6x); height: var(--rk_size_6x);
+  border-radius: var(--radius-full); background: var(--backgroundBlur); color: var(--contentPrimary); }
+.text { display: flex; flex-direction: column; gap: var(--rk_spacing_1x); flex: 1; min-width: 0; }
+.title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--contentPrimary); }
+.meta { display: flex; align-items: center; gap: var(--rk_spacing_1x); color: var(--contentSecondary); }
+.chevron { flex: none; color: var(--contentPrimary); }

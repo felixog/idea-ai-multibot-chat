@@ -1,0 +1,2 @@
+.root { padding: var(--rk_spacing_half) var(--rk_spacing_3x); border-radius: var(--radius-full); background: var(--backgroundElevation_Alt);
+  color: var(--contentSecondary); }
