@@ -5,8 +5,7 @@ import { cx } from '../../../lib/cx';
 import { startDrag, sliderKey } from '../../../lib/drag';
 import { clamp, mss, secs, snap, valueText } from '../../../lib/time';
 import { Button } from '../Button/Button';
-import { CUT_4, CUT_8, HOOK_28 } from '../../../lib/waveforms';
-import { Waveform } from '../Waveform/Waveform';
+import { HOOK_BARS } from '../../../lib/waveforms';
 import s from './TrimEditor.module.css';
 
 interface TrimEditorProps {
@@ -59,20 +58,29 @@ export function TrimEditor({ variant, duration, range, min, step, onChange, onSa
     <div className={s.root}>
       {variant === 'waveform' ? (
         <div ref={track} className={s.wave}>
-          <span className={s.cut} style={{ width: pct(range.start) }}>
-            <Waveform bars={CUT_8} tone="ink" />
+          {/* One fixed waveform for the whole clip; only the selection and handles move over it. */}
+          <span className={s.selection} style={{ left: pct(range.start), width: pct(range.end - range.start) }} />
+          <span className={s.bars} aria-hidden="true">
+            {HOOK_BARS.map((h, i) => {
+              const centre = ((i + 0.5) / HOOK_BARS.length) * duration;
+              const inside = centre >= range.start && centre <= range.end;
+              // A handle sits just outside each edge of the selection; hide the bar it covers.
+              const step = duration / HOOK_BARS.length;
+              const covered = (centre < range.start && centre > range.start - step) || (centre > range.end && centre < range.end + step);
+              return (
+                <span
+                  key={i}
+                  className={cx(s.bar, inside ? s.barIn : s.barOut, covered && s.barCovered)}
+                  style={{ height: h, left: `${((i + 0.5) / HOOK_BARS.length) * 100}%` }}
+                />
+              );
+            })}
           </span>
-          <span className={s.handle} {...handle('start')}>
+          <span className={s.handle} style={{ left: `max(0px, calc(${pct(range.start)} - var(--rk_spacing_2x)))` }} {...handle('start')}>
             <span className={s.grip} />
           </span>
-          <span className={s.selection}>
-            <Waveform bars={HOOK_28} tone="light" />
-          </span>
-          <span className={s.handle} {...handle('end')}>
+          <span className={s.handle} style={{ left: `min(${pct(range.end)}, calc(100% - var(--rk_spacing_2x)))` }} {...handle('end')}>
             <span className={s.grip} />
-          </span>
-          <span className={s.cut} style={{ width: pct(duration - range.end) }}>
-            <Waveform bars={CUT_4} tone="ink" />
           </span>
         </div>
       ) : (

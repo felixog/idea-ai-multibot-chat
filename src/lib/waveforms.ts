@@ -1,3 +1,6 @@
 export const HOOK_28 = [10, 18, 26, 14, 22, 30, 16, 24, 12, 28, 20, 32, 14, 26, 18, 30, 12, 22, 28, 16, 24, 10, 20, 26, 14, 18, 22, 12];
 export const CUT_8 = [8, 14, 20, 12, 22, 16, 10, 18];
 export const CUT_4 = [12, 24, 18, 28];
+
+/** The whole 20s hook at 2 bars a second: the seed's cut-start, selection and cut-end bars joined in time order. */
+export const HOOK_BARS = [...CUT_8, ...HOOK_28, ...CUT_4];

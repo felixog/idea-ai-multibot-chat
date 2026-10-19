@@ -1,12 +1,18 @@
 .root { display: flex; flex-direction: column; gap: var(--rk_spacing_2x); width: 100%; }
 
 /* Audio: waveform track */
-.wave { display: flex; height: var(--rk_size_8x); overflow: hidden; border-radius: var(--radius-200);
+.wave { position: relative; height: var(--rk_size_8x); overflow: hidden; border-radius: var(--radius-200);
   background: var(--backgroundElevation_Alt); border: var(--borderWidth-M) solid var(--border_Decorative); touch-action: none; }
-.cut { display: flex; align-items: center; flex: none; min-width: 0; overflow: hidden; padding: var(--rk_spacing_3x) var(--rk_spacing_1x); opacity: .45; }
-.selection { display: flex; align-items: center; flex: 1; min-width: 0; overflow: hidden; padding: var(--rk_spacing_2x); background: var(--backgroundBrand); }
-.handle { position: relative; display: grid; place-items: center; flex: none; width: var(--rk_spacing_2x); height: 100%;
-  background: var(--backgroundDark); cursor: ew-resize; touch-action: none; }
+.selection { position: absolute; top: 0; bottom: 0; background: var(--backgroundBrand); pointer-events: none; }
+.bars { position: absolute; inset: 0; pointer-events: none; }
+/* 6 wide at desktop; narrows with the track so neighbours never touch on a phone. */
+.bar { position: absolute; top: 50%; width: min(6px, calc(100% / 40 - 2px)); border-radius: var(--radius-full);
+  transform: translate(-50%, -50%); transition: background-color .12s, opacity .12s; }
+.barIn { background: var(--backgroundElevation_Alt200); }
+.barOut { background: var(--contentPrimary); opacity: .45; }
+.barCovered { opacity: 0; }
+.handle { position: absolute; top: 0; bottom: 0; display: grid; place-items: center; width: var(--rk_spacing_2x);
+  background: var(--backgroundDark); cursor: ew-resize; touch-action: none; z-index: 1; }
 .handle::after { content: ''; position: absolute; inset: 0 calc(-1 * var(--rk_spacing_2x)); }
 .handle:focus-visible { box-shadow: var(--focusRing); z-index: 1; }
 .grip { width: var(--rk_spacing_half); height: var(--rk_size_4x); border-radius: var(--radius-50); background: var(--backgroundBrand); }
