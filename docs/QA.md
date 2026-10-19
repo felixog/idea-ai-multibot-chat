@@ -63,6 +63,7 @@ Run on 17 Oct 2026 against `npm run preview` in headless Chromium (Playwright 1.
 
 ## Deployment (19 Oct 2026)
 
-- Production: https://rekka-multibot-chat.vercel.app (Vercel team Lixef, Hobby). Public, HTTP 200; `/og.png` served.
+- Production: https://idea-ai-multibot-chat.vercel.app (Vercel team Lixef, Hobby). Public, HTTP 200; `/og.png` served.
 - Per-deployment URLs stay behind Vercel Authentication (HTTP 302 to login), as intended.
-- Against production (`BASE_URL=https://rekka-multibot-chat.vercel.app npx playwright test tests/visual.spec.ts tests/a11y.spec.ts`): desktop 0.63%, tablet 1.92%, mobile 1.87%; axe and the keyboard demo path pass.
+- Against production (`BASE_URL=https://idea-ai-multibot-chat.vercel.app npx playwright test tests/visual.spec.ts tests/a11y.spec.ts`): desktop 0.63%, tablet 1.92%, mobile 1.87%; axe and the keyboard demo path pass.
+- 19 Oct: the production domain is now https://idea-ai-multibot-chat.vercel.app (the `rekka-multibot-chat.vercel.app` alias returns 404). Sharing tags updated to it.
