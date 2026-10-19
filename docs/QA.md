@@ -60,3 +60,9 @@ Run on 17 Oct 2026 against `npm run preview` in headless Chromium (Playwright 1.
 - The Figma Tablet frame shows two bot bubbles stretched full width while the hook reply hugs its text; the build follows the component (hug). DECISIONS #30.
 - Figma wraps "Want a 6 second loop for the teaser?" onto two lines at 744 where the browser fits one line.
 - The video stage and cover are the SVG originals, not Figma's raster fills, so artwork is masked in the visual test.
+
+## Deployment (19 Oct 2026)
+
+- Production: https://rekka-multibot-chat.vercel.app (Vercel team Lixef, Hobby). Public, HTTP 200; `/og.png` served.
+- Per-deployment URLs stay behind Vercel Authentication (HTTP 302 to login), as intended.
+- Against production (`BASE_URL=https://rekka-multibot-chat.vercel.app npx playwright test tests/visual.spec.ts tests/a11y.spec.ts`): desktop 0.63%, tablet 1.92%, mobile 1.87%; axe and the keyboard demo path pass.
