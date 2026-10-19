@@ -1,6 +1,6 @@
-# Rekka · Multi-bot chat prototype
+# Rex · Multi-bot chat prototype
 
-One chat, two characters: Nova makes the music, Iris makes the visuals. An interactive React prototype for Felix Oginni's Creative Fabrica Product Designer (Studio) take-home, built on the Rekka design system.
+One chat, two characters: Nova makes the music, Iris makes the visuals. An interactive React prototype for Felix Oginni's Creative Fabrica Product Designer (Studio) take-home, built on the Rex design system.
 
 - Spec: [docs/BRIEF.md](docs/BRIEF.md) · Figma vs brief decisions: [docs/DECISIONS.md](docs/DECISIONS.md) · QA: [docs/QA.md](docs/QA.md)
 - Figma: [Felix Oginni | Idea.ai Challenge | Creative Fabrica](https://www.figma.com/design/mXVWjW8DQRoi3pdiBcY0Gi/Felix-Oginni-%7C-Idea.ai-Challenge-%7C-Creative-Fabrica)

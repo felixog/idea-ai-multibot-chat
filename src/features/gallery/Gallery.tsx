@@ -85,7 +85,7 @@ export function PrimitivesGallery() {
 export default function Gallery() {
   return (
     <main className={s.page}>
-      <h1 className="headline_2">Rekka component gallery</h1>
+      <h1 className="headline_2">Rex component gallery</h1>
       <PrimitivesGallery />
       <MediaGallery />
     </main>

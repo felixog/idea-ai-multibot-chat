@@ -1,4 +1,4 @@
-# Rekka multi-bot chat prototype
+# Rex multi-bot chat prototype
 
 One-page, interactive React prototype of a web chat where one person directs two AI characters:
 Nova (Bot A, Producer, oceanic ring) and Iris (Bot B, Visual director, gold ring).

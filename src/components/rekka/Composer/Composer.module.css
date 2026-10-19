@@ -3,7 +3,7 @@
 .chips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--rk_spacing_2x); }
 .replying { color: var(--contentTetiary); }
 .tray { display: flex; flex-direction: column; align-items: center; gap: var(--rk_spacing_2x);
-  padding: var(--rk_spacing_2x) var(--rk_spacing_4x) var(--rk_spacing_4x); background: var(--backgroundElevation0);
+  padding: var(--rk_spacing_2x) var(--rk_spacing_4x) var(--rk_spacing_4x); background: var(--backgroundElevation1);
   border-radius: var(--radius-300) var(--radius-300) 0 0; box-shadow: var(--elevation_half); }
 .handle { width: var(--rk_size_7x); height: var(--rk_spacing_1x); border-radius: var(--radius-50); background: var(--border_Functional); }
 .inputRow { display: flex; align-items: flex-end; gap: var(--rk_spacing_2x); width: 100%; }

@@ -95,7 +95,7 @@ export function DemoCard({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </section>
       <a className={`body_tiny ${s.credit}`} href={FIGMA_URL} target="_blank" rel="noreferrer">
-        Rekka · prototype by Felix Oginni
+        Rex · prototype by Felix Oginni
       </a>
     </div>
   );

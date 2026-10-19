@@ -37,7 +37,7 @@
   --backgroundBlur200: #fffaf7e0;
   --backgroundOverlay: #0d050066;
   --backgroundDark: var(--black-80);             /* video stage, toasts */
-  --backgroundBrand: var(--sunsetLight);         /* Rekka orange */
+  --backgroundBrand: var(--sunsetLight);         /* Rex orange */
   --backgroundAction_Default: var(--dreamsMain); /* purple: a character acts */
   --backgroundAction_Light: var(--dreamsLight);
   --backgroundAction_onBrand: var(--turquoiseMain);
@@ -50,7 +50,7 @@
   /* Semantic: content */
   --contentPrimary: var(--black-70);
   --contentSecondary: var(--black-60);
-  --contentTetiary: var(--black-40);            /* Rekka's spelling, keep it */
+  --contentTetiary: var(--black-40);            /* Rex's spelling, keep it */
   --contentPrimary_onColor: var(--black-10);
   --contentSecondary_onColor: var(--black-20);
   --contentTetiary_onColor: var(--black-30);

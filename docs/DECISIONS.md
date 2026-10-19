@@ -87,3 +87,11 @@ Visual diff after phase 5 (pixelmatch, threshold 0.1): desktop 0.76%, tablet 4.7
 
 Visual diff after phase 6 (artwork masked): desktop 0.63%, tablet 1.92%, mobile 1.87%, heights 2159 / 2159 / 2159.
 | 41 | Compact video time label | n/a | n/a | hidden when the card is under 280px; the scrubber keeps a 48px minimum | At 320 the label left no room for the scrubber. The slider's aria-valuetext still gives the time. |
+
+## After launch: Felix's review (19 Oct 2026)
+
+| # | Topic | Before | Chosen | Why |
+| --- | --- | --- | --- | --- |
+| 42 | Composer tray background | `--backgroundElevation0` (cream, as in Figma and the brief) | `--backgroundElevation1` (white) | Felix: the input area must read clearly as separate from the thread. |
+| 43 | Space under the last message | list padding-bottom 24, but at full scroll the last message sat flush on the composer | the message column sizes to its content (`align-self: flex-start`) and carries the 24 bottom padding | The column was stretched to the viewport height, so its content overflowed and the padding landed mid-thread. Captures are unchanged. |
+| 44 | Product name | Rekka | Rex in every piece of UI copy, metadata (title, Open Graph, Twitter), README, CLAUDE.md and code comments | Felix's rename. Left unchanged: `src/components/rekka/` folder, the `rekka-multibot-chat` package, repo, Vercel project and URL (renaming those breaks the live link), and docs/BRIEF.md and earlier rows here, which record the brief as written. |
