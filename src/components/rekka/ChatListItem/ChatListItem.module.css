@@ -7,3 +7,7 @@
 .meta { flex: none; color: var(--contentTetiary); }
 .active .meta { color: var(--contentSecondary); }
 .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.metaRow { display: inline-flex; align-items: center; gap: var(--rk_spacing_1x); flex: none; }
+/* Unread: a dot and the preview in primary ink, so a background reply is noticeable. */
+.dot { width: var(--rk_spacing_2x); height: var(--rk_spacing_2x); border-radius: var(--radius-full); background: var(--backgroundBrand); }
+.unread .preview { color: var(--contentPrimary); }

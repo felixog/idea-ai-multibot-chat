@@ -1,11 +1,11 @@
-import { Droplets, Repeat2, RotateCcw, Scissors, Sparkles, Undo2 } from 'lucide-react';
+import { Droplets, Film, Repeat2, RotateCcw, Scissors, Sparkles, Undo2 } from 'lucide-react';
 import type { Change, ChangeIcon } from '../../../features/chat/types';
 import { cx } from '../../../lib/cx';
 import { Icon } from '../../../lib/icon';
 import { IconButton } from '../IconButton/IconButton';
 import s from './ChangeItem.module.css';
 
-const ICONS: Record<ChangeIcon, typeof Scissors> = { scissors: Scissors, sparkles: Sparkles, droplets: Droplets, repeat: Repeat2 };
+const ICONS: Record<ChangeIcon, typeof Scissors> = { scissors: Scissors, sparkles: Sparkles, droplets: Droplets, repeat: Repeat2, film: Film };
 
 export function ChangeItem({ change, onUndo }: { change: Change; onUndo: () => void }) {
   return (

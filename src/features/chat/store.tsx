@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { CAST, type CharacterId } from './cast';
-import { isPlaying, mentionedIn, mentionOptions, queryAtCaret, type MentionKey } from './logic';
-import { KEYWORDS, newEditCard, REPLIES, SEED_TRIM, seedState } from './script';
+import { isPlaying, madeItems, mentionedIn, mentionOptions, queryAtCaret, type MentionKey } from './logic';
+import { CHAT_IDS, CHAT_SCRIPTS, KEYWORDS, newEditCard, REPLIES, SEED_TRIM, seedState } from './script';
 import { createSimulator, typingDelay } from './simulate';
-import type { AudioMedia, ChatState, EditCardMedia, ImageMedia, Media, MediaActions, Range, ThreadItem, VideoMedia } from './types';
-import { COVER_SRC, duration, WARM_FILTER } from '../../lib/media';
+import type { AudioMedia, ChatState, EditCardMedia, ImageMedia, Media, MediaActions, Range, ThreadContent, ThreadItem, VideoMedia } from './types';
+import { duration, WARM_FILTER } from '../../lib/media';
 import { CAST_COLLAPSED_KEY, CHATS_COLLAPSED_KEY, writeFlag } from '../../lib/storage';
 import { clockNow, mss, secs } from '../../lib/time';
 
@@ -32,6 +32,8 @@ export interface ChatApi extends MediaActions {
   dismissToast(): void;
   setChatsOpen(open: boolean): void;
   setCastOpen(open: boolean): void;
+  /** Switch the open chat. */
+  openChat(id: string): void;
   setChatsCollapsed(collapsed: boolean): void;
   setCastCollapsed(collapsed: boolean): void;
   jumpTo(mediaId: string): void;
@@ -75,6 +77,23 @@ function addItem(s: ChatState, item: ThreadItem): ChatState {
   return { ...s, items: [...s.items, item] };
 }
 
+/** Applies fn to a chat's content, whether it is the open chat or one in the background. */
+function onThread(s: ChatState, chatId: string, fn: (t: ThreadContent) => ThreadContent): ChatState {
+  if (chatId === s.chatId) return { ...s, ...fn({ items: s.items, addressees: s.addressees, draft: s.draft }) };
+  const t = s.threads[chatId];
+  if (!t) return s;
+  return { ...s, threads: { ...s.threads, [chatId]: { ...t, ...fn(t) } } };
+}
+
+/** Which chat holds a piece of media. */
+function chatOfMedia(s: ChatState, mediaId: string): string | null {
+  if (s.items.some((i) => i.kind === 'message' && i.mediaId === mediaId)) return s.chatId;
+  for (const t of Object.values(s.threads)) {
+    if (t.id !== s.chatId && t.items.some((i) => i.kind === 'message' && i.mediaId === mediaId)) return t.id;
+  }
+  return null;
+}
+
 function download(url: string, name: string) {
   const a = document.createElement('a');
   a.href = url;
@@ -92,6 +111,8 @@ interface Reply {
 
 interface Job {
   character: CharacterId;
+  /** The chat the reply belongs to (set when queued). */
+  chatId?: string;
   delay?: number;
   /** A direct request on the character's own media (Make changes): it goes through even when the character is muted. */
   direct?: boolean;
@@ -136,19 +157,21 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
     sim.after(job.delay ?? 0, () => {
       if (!job.direct && stateRef.current.muted[job.character]) return next();
       const typingId = uid('t');
-      update((s) => addItem(s, { id: typingId, kind: 'typing', character: job.character }));
+      const chatId = job.chatId ?? stateRef.current.chatId;
+      update((s) => onThread(s, chatId, (t) => ({ ...t, items: [...t.items, { id: typingId, kind: 'typing', character: job.character }] })));
       sim.after(typingDelay(), () => {
         if (!job.direct && stateRef.current.muted[job.character]) {
-          update((s) => ({ ...s, items: s.items.filter((i) => i.id !== typingId) }));
+          update((s) => onThread(s, chatId, (t) => ({ ...t, items: t.items.filter((i) => i.id !== typingId) })));
           return next();
         }
         const r = job.make();
         const msg: ThreadItem = { id: uid('i'), kind: 'message', sender: job.character, text: r.text, time: clockNow(), mediaId: r.media?.id };
-        update((s) => ({
-          ...s,
-          items: s.items.map((i) => (i.id === typingId ? msg : i)),
-          media: r.media ? { ...s.media, [r.media.id]: r.media } : s.media,
-        }));
+        update((s) => {
+          const next = onThread(s, chatId, (t) => ({ ...t, items: t.items.map((i) => (i.id === typingId ? msg : i)) }));
+          // A reply that lands in a chat you are not looking at marks it unread.
+          const threads = chatId === next.chatId ? next.threads : { ...next.threads, [chatId]: { ...next.threads[chatId], unread: true } };
+          return { ...next, threads, media: r.media ? { ...next.media, [r.media.id]: r.media } : next.media };
+        });
         r.onLanded?.();
         sim.after(600, next);
       });
@@ -157,7 +180,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
 
   const enqueue = useCallback(
     (job: Job) => {
-      queue.current.push(job);
+      queue.current.push({ ...job, chatId: job.chatId ?? stateRef.current.chatId });
       pump();
     },
     [pump],
@@ -183,27 +206,34 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
   );
 
   const newMedia = useCallback(
-    (kind: 'audio' | 'image' | 'video', owner: CharacterId): Media => {
+    (kind: 'audio' | 'image' | 'video', owner: CharacterId, chatId: string): Media => {
       const take = rotation.current.take++;
+      const script = CHAT_SCRIPTS[chatId] ?? CHAT_SCRIPTS[CHAT_IDS.lateTrains];
       const base = { id: uid('m'), owner, version: 1, changeDraft: '', changes: [], progress: { percent: 33, stepIndex: 1 } };
-      if (kind === 'image')
-        return { ...base, kind, title: `Cover art, take ${take}`, prompt: 'Another direction for the cover: night train window, city lights, deep blue and amber', state: 'generating', src: COVER_SRC, filter: 'hue-rotate(14deg) saturate(1.1)' };
+      if (kind === 'image') {
+        const i = script.image;
+        return { ...base, kind, title: `${i.title}, take ${take}`, prompt: i.prompt, state: 'generating', src: i.src, filter: i.filter, alt: i.alt };
+      }
       if (kind === 'video')
         return { ...base, kind, title: `Teaser loop, take ${take}`, prompt: 'Six second loop of the window lights, rain streaks, seamless, 16:9', state: 'generating', fullDuration: 6, trim: null, pendingTrim: { start: 0, end: 6 }, current: 0, muted: false, filter: null };
-      return { ...base, kind, title: `Late trains hook, take ${take}`, prompt: 'Lo-fi hook, 92 BPM, late trains and city lights, a new take', state: 'generating', fullDuration: 20, trim: null, pendingTrim: { start: 0, end: 20 }, current: 0, playing: false };
+      const a = script.audio;
+      return { ...base, kind, title: `${a.title}, take ${take}`, prompt: a.prompt, state: 'generating', fullDuration: a.seconds, trim: null, pendingTrim: { start: 0, end: a.seconds }, current: 0, playing: false, tags: a.tags };
     },
     [],
   );
 
   const replyWithMedia = useCallback(
-    (character: CharacterId, text: string, kind: 'audio' | 'image' | 'video') =>
+    (character: CharacterId, text: string, kind: 'audio' | 'image' | 'video') => {
+      const chatId = stateRef.current.chatId;
       enqueue({
         character,
+        chatId,
         make: () => {
-          const media = newMedia(kind, character);
+          const media = newMedia(kind, character, chatId);
           return { text, media, onLanded: () => runGeneration(media.id, 3000, () => ({})) };
         },
-      }),
+      });
+    },
     [enqueue, newMedia, runGeneration],
   );
 
@@ -280,10 +310,18 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         if (!text) return;
         const named = mentionedIn(text);
         const addressees = named.length ? named : s.addressees;
-        setState((st) =>
-          addItem({ ...st, draft: '', picker: { open: false, query: '', index: 0 }, addressees }, { id: uid('i'), kind: 'message', sender: 'user', text, time: clockNow() }),
-        );
+        setState((st) => {
+          let next: ChatState = { ...st, draft: '', picker: { open: false, query: '', index: 0 }, addressees };
+          // First message today in an older chat: add a Today divider and show its time in the list.
+          const thread = st.threads[st.chatId];
+          if (thread?.dayLabel) {
+            next = addItem(next, { id: uid('d'), kind: 'day', label: 'Today' });
+            next = { ...next, threads: { ...next.threads, [st.chatId]: { ...thread, dayLabel: null } } };
+          }
+          return addItem(next, { id: uid('i'), kind: 'message', sender: 'user', text, time: clockNow() });
+        });
         if (/@(iris|all)\b/i.test(text)) markDone('mention');
+        const chatId = s.chatId;
         const responders = (['nova', 'iris'] as CharacterId[]).filter((c) => addressees.includes(c) && !s.muted[c]);
         for (const c of responders) {
           if (c === 'iris' && KEYWORDS.cover.test(text)) replyWithMedia('iris', REPLIES.newCover, 'image');
@@ -293,7 +331,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
             enqueue({
               character: c,
               make: () => {
-                const lines = REPLIES[c];
+                const lines = (CHAT_SCRIPTS[chatId] ?? CHAT_SCRIPTS[CHAT_IDS.lateTrains])[c];
                 return { text: lines[rotation.current[c]++ % lines.length] };
               },
             });
@@ -339,6 +377,24 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         writeFlag(CAST_COLLAPSED_KEY, collapsed);
         setState((s) => ({ ...s, ui: { ...s.ui, castCollapsed: collapsed } }));
       },
+      openChat(id) {
+        setState((s) => {
+          if (id === s.chatId || !s.threads[id]) return { ...s, ui: { ...s.ui, chatsOpen: false } };
+          const paused = pauseAll(s);
+          const saved = { ...s.threads[s.chatId], items: s.items, addressees: s.addressees, draft: s.draft };
+          const next = s.threads[id];
+          return {
+            ...paused,
+            chatId: id,
+            items: next.items,
+            addressees: next.addressees,
+            draft: next.draft,
+            picker: { open: false, query: '', index: 0 },
+            threads: { ...s.threads, [s.chatId]: saved, [id]: { ...next, unread: false } },
+            ui: { ...s.ui, chatsOpen: false, highlightId: null, editFocus: null },
+          };
+        });
+      },
       registerEl(id) {
         return (el) => {
           if (el) els.current.set(id, el);
@@ -346,6 +402,8 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         };
       },
       jumpTo(mediaId) {
+        const owner = chatOfMedia(stateRef.current, mediaId);
+        if (owner && owner !== stateRef.current.chatId) actions.openChat(owner);
         setState((s) => ({ ...s, ui: { ...s.ui, highlightId: mediaId, castOpen: false } }));
         // Wait a frame so a closing sheet releases scroll lock before scrolling.
         window.setTimeout(() => {
@@ -362,10 +420,11 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         if (preview === 'phone') markDone('phone');
       },
       downloadAll() {
-        toast('Downloading 3 files');
-        ['/assets/cover-late-trains.svg', '/assets/poster-teaser-loop.svg', '/assets/avatar-nova.svg'].forEach((u, i) =>
-          window.setTimeout(() => download(u, u.split('/').pop() ?? 'file.svg'), i * 250),
-        );
+        const s = stateRef.current;
+        const rows = madeItems(s).map((r) => r.media);
+        toast(`Downloading ${rows.length} files`);
+        const urls = rows.filter((m) => m.kind !== 'audio').map((m) => (m.kind === 'image' ? m.src : '/assets/poster-teaser-loop.svg'));
+        urls.forEach((u, i) => window.setTimeout(() => download(u, u.split('/').pop() ?? 'file.svg'), i * 250));
       },
       reset() {
         sim.clearAll();
@@ -507,7 +566,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
           let next = patchMedia<EditCardMedia>(s, id, { status: 'applied', view: 'after' });
           next =
             e.targetKind === 'image'
-              ? patchMedia<ImageMedia>(next, e.targetId, (t) => ({ filter: WARM_FILTER, version: t.version + 1, state: 'default' }))
+              ? patchMedia<ImageMedia>(next, e.targetId, (t) => ({ src: e.afterSrc ?? t.src, filter: e.afterFilter ?? WARM_FILTER, version: t.version + 1, state: 'default', beforeSrc: t.src }) as Partial<ImageMedia>)
               : patchMedia<VideoMedia>(next, e.targetId, (t) => ({ trim: { ...SEED_TRIM.loop }, pendingTrim: { ...SEED_TRIM.loop }, filter: WARM_FILTER, version: t.version + 1, current: 0, state: 'default' }));
           return next;
         });
@@ -520,7 +579,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
           let next = patchMedia<EditCardMedia>(s, id, { status: 'ready' });
           next =
             e.targetKind === 'image'
-              ? patchMedia<ImageMedia>(next, e.targetId, (t) => ({ filter: null, version: Math.max(1, t.version - 1) }))
+              ? patchMedia<ImageMedia>(next, e.targetId, (t) => ({ src: t.beforeSrc ?? t.src, filter: null, version: Math.max(1, t.version - 1) }))
               : patchMedia<VideoMedia>(next, e.targetId, (t) => ({ trim: null, filter: null, version: Math.max(1, t.version - 1), current: 0 }));
           return next;
         });

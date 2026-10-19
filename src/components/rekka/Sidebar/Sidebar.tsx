@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Lightbulb, SquarePen, X } from 'lucide-react';
-import { lastTime, previewLine } from '../../../features/chat/logic';
-import { OTHER_CHATS, THREAD_TITLE } from '../../../features/chat/script';
+import { chatRows } from '../../../features/chat/logic';
+import { CHAT_ORDER } from '../../../features/chat/script';
 import { useChat } from '../../../features/chat/store';
 import { cx } from '../../../lib/cx';
 import { DEMO_HIDDEN_KEY, writeFlag } from '../../../lib/storage';
@@ -27,8 +27,8 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
   const chat = useChat();
   const { demo } = chat.state;
   const doneCount = DEMO_ROW_KEYS.filter((k) => demo.done.includes(k)).length;
-  const other = () => {
-    chat.toast('This prototype has one chat: Late trains teaser');
+  const newChat = () => {
+    chat.toast('New chats aren’t part of this prototype');
     onClose?.();
   };
   const toggleTips = () => {
@@ -44,7 +44,7 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
         </div>
       )}
       <div className={s.nav}>
-        <NavItem icon={SquarePen} label="New chat" onClick={other} />
+        <NavItem icon={SquarePen} label="New chat" onClick={newChat} />
         <NavItem
           icon={Lightbulb}
           label="Try the prototype"
@@ -60,9 +60,8 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
       <section className={s.chats} aria-labelledby="chats-heading">
         <h2 id="chats-heading" className={`body_small_bold ${s.section}`}>Chats</h2>
         <div className={s.list}>
-          <ChatListItem title={THREAD_TITLE} time={lastTime(chat.state.items)} preview={previewLine(chat.state.items)} active onClick={() => onClose?.()} />
-          {OTHER_CHATS.map((c) => (
-            <ChatListItem key={c.id} title={c.title} time={c.time} preview={c.preview} active={false} onClick={other} />
+          {chatRows(chat.state, CHAT_ORDER).map((r) => (
+            <ChatListItem key={r.id} title={r.title} time={r.time} preview={r.preview} active={r.active} unread={r.unread} onClick={() => chat.openChat(r.id)} />
           ))}
         </div>
       </section>

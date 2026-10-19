@@ -24,7 +24,11 @@ export const EditCard = forwardRef<HTMLElement, Props>(function EditCard({ media
   const showAfter = !working && e.view === 'after';
   const nextVersion = e.status === 'applied' ? target.version : target.version + 1;
   const title = working ? target.title : `${target.title} · v${nextVersion}`;
-  const src = video ? POSTER_SRC : (target as ImageMedia).src;
+  const img = target as ImageMedia;
+  // Before: the art as it was; after: the proposed version (a new file and/or a grade).
+  const beforeSrc = video ? POSTER_SRC : e.status === 'applied' ? (img.beforeSrc ?? img.src) : img.src;
+  const afterSrc = video ? POSTER_SRC : (e.afterSrc ?? img.src);
+  const afterFilter = e.afterFilter ?? WARM_FILTER;
   const before = video ? 6 : 0;
   const after = video ? 4.6 : 0;
 
@@ -45,7 +49,7 @@ export const EditCard = forwardRef<HTMLElement, Props>(function EditCard({ media
         <div className={cx(s.thumb, video && s.thumbVideo)} role="img" aria-label={showAfter ? `After: ${title}` : `Before: ${target.title}`}>
           <span
             className={s.art}
-            style={{ backgroundImage: `url(${src})`, filter: showAfter ? WARM_FILTER : undefined }}
+            style={{ backgroundImage: `url(${showAfter ? afterSrc : beforeSrc})`, filter: showAfter ? afterFilter : undefined }}
           />
           {video && <span className={`body_tiny tabular ${s.badge}`}>{mss(showAfter ? after : before)}</span>}
         </div>

@@ -32,6 +32,7 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
   const { ui, muted } = chat.state;
   const castTrigger = useRef<HTMLButtonElement>(null);
   const mobile = layout === 'mobile';
+  const title = chat.state.threads[chat.state.chatId]?.title ?? THREAD_TITLE;
 
   const skip = (
     <a className={s.skip} href={`#${COMPOSER_INPUT_ID}`}>
@@ -87,14 +88,14 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
         <ThreadHeader
           ref={castTrigger}
           layout="mobile"
-          title={THREAD_TITLE}
+          title={title}
           muted={muted}
           castOpen={ui.castOpen}
           onOpenCast={() => chat.setCastOpen(true)}
           onOpenChats={() => chat.setChatsOpen(true)}
         />
         <main className={s.mobileMain}>
-          <ChatThread layout="mobile" />
+          <ChatThread key={chat.state.chatId} layout="mobile" />
           <div className={s.mobileDock}>
             <Composer layout="mobile" />
           </div>
@@ -130,12 +131,12 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
         <ThreadHeader
           ref={castTrigger}
           layout="desktop"
-          title={THREAD_TITLE}
+          title={title}
           muted={muted}
           castOpen={ui.castOpen}
           onOpenCast={castRailOnly ? () => chat.setCastOpen(true) : undefined}
         />
-        <ChatThread layout="desktop" capture={capture} />
+        <ChatThread key={chat.state.chatId} layout="desktop" capture={capture} />
         <div className={s.dock}>
           <div className={s.dockColumn}>
             <Composer layout="desktop" />

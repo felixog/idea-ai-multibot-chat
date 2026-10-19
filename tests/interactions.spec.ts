@@ -156,3 +156,25 @@ test('1100: the cast is a rail that opens the drawer', async ({ page }) => {
   await page.keyboard.press('Escape');
   await expect(drawer).toBeHidden();
 });
+
+test('three chats: switch, apply the album edit, background reply marks unread', async ({ page }) => {
+  test.setTimeout(30_000);
+  const album = page.getByRole('button', { name: /^Album cover ideas/ });
+  await expect(album).toContainText('new reply');
+  await album.click();
+  await expect(page.locator('main h1')).toHaveText('Album cover ideas');
+  await expect(album).not.toContainText('new reply');
+  const edit = page.getByRole('group', { name: /Edit: EP cover, night radio/ });
+  await edit.getByRole('button', { name: 'Apply edits' }).click();
+  await expect(page.getByRole('group', { name: 'Image: EP cover, night radio' }).locator('img')).toHaveAttribute('src', '/assets/night-radio-grain.svg');
+
+  await page.locator('#message-box').fill('@Iris love it');
+  await page.locator('#message-box').press('Enter');
+  await expect(page.getByRole('log').getByText('Today')).toBeVisible();
+  await page.getByRole('button', { name: /^Sunday market vlog/ }).click();
+  await expect(page.locator('main h1')).toHaveText('Sunday market vlog');
+  await expect(page.getByRole('complementary', { name: 'Cast' })).toContainText('4 items');
+  await expect(album).toContainText('new reply', { timeout: 5000 });
+  await album.click();
+  await expect(page.getByRole('log').getByText(/title sit at the top|amber dial|window lit/)).toBeVisible();
+});

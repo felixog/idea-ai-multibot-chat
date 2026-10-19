@@ -3,7 +3,7 @@ import type { CharacterId } from './cast';
 export type { CharacterId };
 export type Sender = 'user' | CharacterId;
 
-export type ChangeIcon = 'scissors' | 'sparkles' | 'droplets' | 'repeat';
+export type ChangeIcon = 'scissors' | 'sparkles' | 'droplets' | 'repeat' | 'film';
 
 export interface Change {
   id: string;
@@ -44,6 +44,8 @@ export interface AudioMedia extends MediaBase {
   pendingTrim: Range;
   current: number;
   playing: boolean;
+  /** Details after the duration, e.g. "92 BPM · lo-fi". */
+  tags: string;
 }
 
 export interface ImageMedia extends MediaBase {
@@ -51,6 +53,9 @@ export interface ImageMedia extends MediaBase {
   state: 'default' | 'editing' | 'generating';
   src: string;
   filter: string | null;
+  alt: string;
+  /** The art before an applied edit swapped it (restored by Undo apply). */
+  beforeSrc?: string;
 }
 
 export interface VideoMedia extends MediaBase {
@@ -82,6 +87,9 @@ export interface EditCardMedia {
   view: 'before' | 'after';
   steps: Step[];
   changes: Change[];
+  /** Image edits: the proposed version. Defaults to the warm grade on the same art. */
+  afterSrc?: string;
+  afterFilter?: string;
 }
 
 export type Media = AudioMedia | ImageMedia | VideoMedia | EditCardMedia;
@@ -93,7 +101,27 @@ export type ThreadItem =
   | { id: string; kind: 'typing'; character: CharacterId }
   | { id: string; kind: 'message'; sender: Sender; text: string; time: string; mediaId?: string };
 
+/** One conversation. The active chat's items, addressees and draft live at the top of ChatState. */
+export interface ThreadData {
+  id: string;
+  title: string;
+  /** "Yesterday", "Mon": shown in the chat list until the chat gets a message today. */
+  dayLabel: string | null;
+  unread: boolean;
+  items: ThreadItem[];
+  addressees: CharacterId[];
+  draft: string;
+}
+
+export interface ThreadContent {
+  items: ThreadItem[];
+  addressees: CharacterId[];
+  draft: string;
+}
+
 export interface ChatState {
+  chatId: string;
+  threads: Record<string, ThreadData>;
   items: ThreadItem[];
   media: Record<string, Media>;
   addressees: CharacterId[];

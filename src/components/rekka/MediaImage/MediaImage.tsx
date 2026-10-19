@@ -12,8 +12,6 @@ import { CardSlot, MediaCard } from '../MediaCard/MediaCard';
 import { MediaToolbar } from '../MediaToolbar/MediaToolbar';
 import s from './MediaImage.module.css';
 
-export const COVER_ALT = 'Cover art: a rainy night train window looking out on city lights in blue and amber';
-
 interface Props {
   media: ImageMedia;
   actions: MediaActions;
@@ -35,7 +33,7 @@ export const MediaImage = forwardRef<HTMLElement, Props>(function MediaImage({ m
         </>
       ) : (
         <>
-          <img data-visual-mask className={s.image} src={m.src} alt={COVER_ALT} style={{ filter: m.filter ?? undefined }} />
+          <img data-visual-mask className={s.image} src={m.src} alt={m.alt} style={{ filter: m.filter ?? undefined }} />
           {m.changes.length > 0 && <ChangeList changes={m.changes} onToggle={(cid) => a.toggleChange(m.id, cid)} />}
           {m.state === 'editing' ? (
             <EditSlot

@@ -12,7 +12,7 @@ export function duration(m: PlayableMedia): number {
 const v = (n: number) => (n > 1 ? ` · v${n}` : '');
 
 export function details(m: AudioMedia | ImageMedia | VideoMedia): string {
-  if (m.kind === 'audio') return `${mss(duration(m))} · 92 BPM · lo-fi${v(m.version)}`;
+  if (m.kind === 'audio') return `${mss(duration(m))} · ${m.tags}${v(m.version)}`;
   if (m.kind === 'image') return `1:1 · v${m.version}`;
   return `${mss(duration(m))} · 16:9${v(m.version)}`;
 }

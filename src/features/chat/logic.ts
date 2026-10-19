@@ -85,3 +85,14 @@ export function isPlaying(m: Media): boolean {
 }
 
 export const optionId = (base: string, key: MentionKey) => `${base}-opt-${key}`;
+
+/** Chat list rows: title, time ("21:08" today, "Yesterday" before), last-message preview and unread state. */
+export function chatRows(state: ChatState, order: string[]) {
+  return order
+    .filter((id) => state.threads[id])
+    .map((id) => {
+      const t = state.threads[id];
+      const items = id === state.chatId ? state.items : t.items;
+      return { id, title: t.title, time: t.dayLabel ?? lastTime(items), preview: previewLine(items), unread: t.unread && id !== state.chatId, active: id === state.chatId };
+    });
+}
