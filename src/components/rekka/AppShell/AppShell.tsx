@@ -8,6 +8,7 @@ import { CastPanelContent } from '../CastPanelContent/CastPanelContent';
 import { ChatThread } from '../ChatThread/ChatThread';
 import { Composer, COMPOSER_INPUT_ID } from '../Composer/Composer';
 import { Drawer } from '../Drawer/Drawer';
+import { NewChatView } from '../NewChatView/NewChatView';
 import { CastRail, type CastTarget } from '../CastRail/CastRail';
 import { SidePanel } from '../SidePanel/SidePanel';
 import { Brand, Sidebar } from '../Sidebar/Sidebar';
@@ -32,7 +33,10 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
   const { ui, muted } = chat.state;
   const castTrigger = useRef<HTMLButtonElement>(null);
   const mobile = layout === 'mobile';
-  const title = chat.state.threads[chat.state.chatId]?.title ?? THREAD_TITLE;
+  const thread = chat.state.threads[chat.state.chatId];
+  const newChat = ui.newChat;
+  const title = newChat ? 'New chat' : (thread?.title ?? THREAD_TITLE);
+  const headerExtras = newChat ? { subtitle: 'Pick a project, a cast and a brief' } : { members: thread?.members };
 
   const skip = (
     <a className={s.skip} href={`#${COMPOSER_INPUT_ID}`}>
@@ -89,16 +93,23 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
           ref={castTrigger}
           layout="mobile"
           title={title}
+          {...headerExtras}
           muted={muted}
           castOpen={ui.castOpen}
           onOpenCast={() => chat.setCastOpen(true)}
           onOpenChats={() => chat.setChatsOpen(true)}
         />
         <main className={s.mobileMain}>
-          <ChatThread key={chat.state.chatId} layout="mobile" />
-          <div className={s.mobileDock}>
-            <Composer layout="mobile" />
-          </div>
+          {newChat ? (
+            <NewChatView />
+          ) : (
+            <>
+              <ChatThread key={chat.state.chatId} layout="mobile" />
+              <div className={s.mobileDock}>
+                <Composer layout="mobile" />
+              </div>
+            </>
+          )}
         </main>
         <Drawer open={ui.chatsOpen} onOpenChange={chat.setChatsOpen} side="left" title="Chats" container={container}>
           <Sidebar onClose={() => chat.setChatsOpen(false)} footer={demoCard} />
@@ -132,16 +143,23 @@ export function AppShell({ capture = false, demoCard, container, contained = fal
           ref={castTrigger}
           layout="desktop"
           title={title}
+          {...headerExtras}
           muted={muted}
           castOpen={ui.castOpen}
           onOpenCast={castRailOnly ? () => chat.setCastOpen(true) : undefined}
         />
-        <ChatThread key={chat.state.chatId} layout="desktop" capture={capture} />
-        <div className={s.dock}>
-          <div className={s.dockColumn}>
-            <Composer layout="desktop" />
-          </div>
-        </div>
+        {newChat ? (
+          <NewChatView />
+        ) : (
+          <>
+            <ChatThread key={chat.state.chatId} layout="desktop" capture={capture} />
+            <div className={s.dock}>
+              <div className={s.dockColumn}>
+                <Composer layout="desktop" />
+              </div>
+            </div>
+          </>
+        )}
       </main>
       <SidePanel
         side="right"

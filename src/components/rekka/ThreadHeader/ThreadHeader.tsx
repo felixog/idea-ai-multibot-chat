@@ -14,14 +14,20 @@ interface ThreadHeaderProps {
   onOpenCast?: () => void;
   onOpenChats?: () => void;
   castOpen?: boolean;
+  /** Who is in this chat (defaults to both). */
+  members?: CharacterId[];
+  /** Replaces the computed subtitle (the new-chat flow). */
+  subtitle?: string;
 }
 
 export const ThreadHeader = forwardRef<HTMLButtonElement, ThreadHeaderProps>(function ThreadHeader(
-  { layout, title, muted, onOpenCast, onOpenChats, castOpen },
+  { layout, title, muted, onOpenCast, onOpenChats, castOpen, members = ['nova', 'iris'], subtitle: subtitleOverride },
   castTriggerRef,
 ) {
   const mutedNames = (Object.keys(muted) as CharacterId[]).filter((c) => muted[c]).map((c) => CAST[c].name);
-  const subtitle = `You, Nova and Iris${mutedNames.length ? ` · ${mutedNames.join(' and ')} muted` : ''}`;
+  const names = members.map((c) => CAST[c].name);
+  const who = names.length === 2 ? `You, ${names[0]} and ${names[1]}` : `You and ${names[0]}`;
+  const subtitle = subtitleOverride ?? `${who}${mutedNames.length ? ` · ${mutedNames.join(' and ')} muted` : ''}`;
   const mobile = layout === 'mobile';
   return (
     <header className={cx(s.root, mobile && s.mobile)}>

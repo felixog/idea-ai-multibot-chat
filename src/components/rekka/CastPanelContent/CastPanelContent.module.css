@@ -6,3 +6,4 @@
 .list { margin: 0; padding: 0; list-style: none; overflow: hidden; border-radius: var(--radius-300); background: var(--backgroundElevation1);
   box-shadow: var(--elevation_half); }
 .list > li + li { border-top: var(--borderWidth-M) solid var(--border_Decorative); }
+.empty { color: var(--contentTetiary); }

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Lightbulb, SquarePen, X } from 'lucide-react';
 import { chatRows } from '../../../features/chat/logic';
-import { CHAT_ORDER } from '../../../features/chat/script';
 import { useChat } from '../../../features/chat/store';
 import { cx } from '../../../lib/cx';
 import { DEMO_HIDDEN_KEY, writeFlag } from '../../../lib/storage';
@@ -28,7 +27,7 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
   const { demo } = chat.state;
   const doneCount = DEMO_ROW_KEYS.filter((k) => demo.done.includes(k)).length;
   const newChat = () => {
-    chat.toast('New chats aren’t part of this prototype');
+    chat.startNewChat();
     onClose?.();
   };
   const toggleTips = () => {
@@ -44,7 +43,7 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
         </div>
       )}
       <div className={s.nav}>
-        <NavItem icon={SquarePen} label="New chat" onClick={newChat} />
+        <NavItem icon={SquarePen} label="New chat" aria-pressed={chat.state.ui.newChat} onClick={newChat} />
         <NavItem
           icon={Lightbulb}
           label="Try the prototype"
@@ -60,7 +59,7 @@ export function Sidebar({ onClose, footer }: SidebarProps) {
       <section className={s.chats} aria-labelledby="chats-heading">
         <h2 id="chats-heading" className={`body_small_bold ${s.section}`}>Chats</h2>
         <div className={s.list}>
-          {chatRows(chat.state, CHAT_ORDER).map((r) => (
+          {chatRows(chat.state, chat.state.order).map((r) => (
             <ChatListItem key={r.id} title={r.title} time={r.time} preview={r.preview} active={r.active} unread={r.unread} onClick={() => chat.openChat(r.id)} />
           ))}
         </div>

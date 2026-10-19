@@ -57,20 +57,21 @@ export function seedItems(): ThreadItem[] {
 
 export function seedState(): ChatState {
   const threads: Record<string, ThreadData> = {
-    [CHAT_IDS.lateTrains]: { id: CHAT_IDS.lateTrains, title: THREAD_TITLE, dayLabel: null, unread: false, items: [], addressees: [], draft: '' },
-    [CHAT_IDS.market]: { id: CHAT_IDS.market, title: 'Sunday market vlog', dayLabel: 'Yesterday', unread: false, items: marketItems(), addressees: ['nova', 'iris'], draft: '' },
-    [CHAT_IDS.album]: { id: CHAT_IDS.album, title: 'Album cover ideas', dayLabel: 'Mon', unread: true, items: albumItems(), addressees: ['iris'], draft: '' },
+    [CHAT_IDS.lateTrains]: { id: CHAT_IDS.lateTrains, title: THREAD_TITLE, dayLabel: null, unread: false, items: [], addressees: [], draft: '', members: ['nova', 'iris'] },
+    [CHAT_IDS.market]: { id: CHAT_IDS.market, title: 'Sunday market vlog', dayLabel: 'Yesterday', unread: false, items: marketItems(), addressees: ['nova', 'iris'], draft: '', members: ['nova', 'iris'] },
+    [CHAT_IDS.album]: { id: CHAT_IDS.album, title: 'Album cover ideas', dayLabel: 'Mon', unread: true, items: albumItems(), addressees: ['iris'], draft: '', members: ['nova', 'iris'] },
   };
   return {
     chatId: CHAT_IDS.lateTrains,
     threads,
+    order: [...CHAT_ORDER],
     items: seedItems(),
     media: { ...seedMedia(), ...otherChatMedia() },
     addressees: ['nova', 'iris'],
     muted: { nova: false, iris: false },
     draft: '',
     picker: { open: false, query: '', index: 0 },
-    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0, editFocus: null, chatsCollapsed: false, castCollapsed: false },
+    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0, editFocus: null, chatsCollapsed: false, castCollapsed: false, newChat: false },
     demo: { done: [], dismissed: false },
     preview: 'fit',
   };

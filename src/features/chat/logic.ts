@@ -93,6 +93,6 @@ export function chatRows(state: ChatState, order: string[]) {
     .map((id) => {
       const t = state.threads[id];
       const items = id === state.chatId ? state.items : t.items;
-      return { id, title: t.title, time: t.dayLabel ?? lastTime(items), preview: previewLine(items), unread: t.unread && id !== state.chatId, active: id === state.chatId };
+      return { id, title: t.title, time: t.dayLabel ?? lastTime(items), preview: previewLine(items), unread: t.unread && id !== state.chatId, active: id === state.chatId && !state.ui.newChat };
     });
 }

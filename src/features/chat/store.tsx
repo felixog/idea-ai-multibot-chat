@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from 'react';
 import { CAST, type CharacterId } from './cast';
 import { isPlaying, madeItems, mentionedIn, mentionOptions, queryAtCaret, type MentionKey } from './logic';
-import { CHAT_IDS, CHAT_SCRIPTS, KEYWORDS, newEditCard, REPLIES, SEED_TRIM, seedState } from './script';
+import { CHAT_IDS, CHAT_SCRIPTS, KEYWORDS, newEditCard, REPLIES, SEED_TRIM, seedState, type ChatScript } from './script';
+import { autoTitle, templateById } from './templates';
 import { createSimulator, typingDelay } from './simulate';
 import type { AudioMedia, ChatState, EditCardMedia, ImageMedia, Media, MediaActions, Range, ThreadContent, ThreadItem, VideoMedia } from './types';
 import { duration, WARM_FILTER } from '../../lib/media';
@@ -34,6 +35,11 @@ export interface ChatApi extends MediaActions {
   setCastOpen(open: boolean): void;
   /** Switch the open chat. */
   openChat(id: string): void;
+  /** Show the guided new-chat flow in the main pane. */
+  startNewChat(): void;
+  cancelNewChat(): void;
+  /** Create a chat from the flow, open it and send the brief as its first message. */
+  createChat(input: { templateId: string; cast: CharacterId[]; brief: string; name: string }): void;
   setChatsCollapsed(collapsed: boolean): void;
   setCastCollapsed(collapsed: boolean): void;
   jumpTo(mediaId: string): void;
@@ -117,6 +123,11 @@ interface Job {
   /** A direct request on the character's own media (Make changes): it goes through even when the character is muted. */
   direct?: boolean;
   make: () => Reply;
+}
+
+/** Replies and art for a chat: its template's script, its seeded script, or Late trains as a fallback. */
+function scriptFor(s: ChatState, chatId: string): ChatScript {
+  return templateById(s.threads[chatId]?.templateId)?.script ?? CHAT_SCRIPTS[chatId] ?? CHAT_SCRIPTS[CHAT_IDS.lateTrains];
 }
 
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -206,30 +217,31 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
   );
 
   const newMedia = useCallback(
-    (kind: 'audio' | 'image' | 'video', owner: CharacterId, chatId: string): Media => {
-      const take = rotation.current.take++;
-      const script = CHAT_SCRIPTS[chatId] ?? CHAT_SCRIPTS[CHAT_IDS.lateTrains];
+    (kind: 'audio' | 'image' | 'video', owner: CharacterId, chatId: string, opening = false): Media => {
+      // A new chat's opening drafts are just "Cover" or "First hook"; later ones are numbered takes.
+      const suffix = opening ? '' : `, take ${rotation.current.take++}`;
+      const script = scriptFor(stateRef.current, chatId);
       const base = { id: uid('m'), owner, version: 1, changeDraft: '', changes: [], progress: { percent: 33, stepIndex: 1 } };
       if (kind === 'image') {
         const i = script.image;
-        return { ...base, kind, title: `${i.title}, take ${take}`, prompt: i.prompt, state: 'generating', src: i.src, filter: i.filter, alt: i.alt };
+        return { ...base, kind, title: `${i.title}${suffix}`, prompt: i.prompt, state: 'generating', src: i.src, filter: i.filter, alt: i.alt };
       }
       if (kind === 'video')
-        return { ...base, kind, title: `Teaser loop, take ${take}`, prompt: 'Six second loop of the window lights, rain streaks, seamless, 16:9', state: 'generating', fullDuration: 6, trim: null, pendingTrim: { start: 0, end: 6 }, current: 0, muted: false, filter: null };
+        return { ...base, kind, title: `Teaser loop${suffix}`, prompt: 'Six second loop of the window lights, rain streaks, seamless, 16:9', state: 'generating', fullDuration: 6, trim: null, pendingTrim: { start: 0, end: 6 }, current: 0, muted: false, filter: null };
       const a = script.audio;
-      return { ...base, kind, title: `${a.title}, take ${take}`, prompt: a.prompt, state: 'generating', fullDuration: a.seconds, trim: null, pendingTrim: { start: 0, end: a.seconds }, current: 0, playing: false, tags: a.tags };
+      return { ...base, kind, title: `${a.title}${suffix}`, prompt: a.prompt, state: 'generating', fullDuration: a.seconds, trim: null, pendingTrim: { start: 0, end: a.seconds }, current: 0, playing: false, tags: a.tags };
     },
     [],
   );
 
   const replyWithMedia = useCallback(
-    (character: CharacterId, text: string, kind: 'audio' | 'image' | 'video') => {
-      const chatId = stateRef.current.chatId;
+    (character: CharacterId, text: string, kind: 'audio' | 'image' | 'video', forChat?: string, opening = false) => {
+      const chatId = forChat ?? stateRef.current.chatId;
       enqueue({
         character,
         chatId,
         make: () => {
-          const media = newMedia(kind, character, chatId);
+          const media = newMedia(kind, character, chatId, opening);
           return { text, media, onLanded: () => runGeneration(media.id, 3000, () => ({})) };
         },
       });
@@ -316,9 +328,16 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
           const thread = st.threads[st.chatId];
           if (thread?.dayLabel) {
             next = addItem(next, { id: uid('d'), kind: 'day', label: 'Today' });
-            next = { ...next, threads: { ...next.threads, [st.chatId]: { ...thread, dayLabel: null } } };
+            next = { ...next, threads: { ...next.threads, [st.chatId]: { ...next.threads[st.chatId], dayLabel: null } } };
           }
-          return addItem(next, { id: uid('i'), kind: 'message', sender: 'user', text, time: clockNow() });
+          next = addItem(next, { id: uid('i'), kind: 'message', sender: 'user', text, time: clockNow() });
+          // Addressing someone who isn't in this chat yet brings them in.
+          const joining = addressees.filter((c) => thread && !thread.members.includes(c));
+          for (const c of joining) next = addItem(next, { id: uid('s'), kind: 'system', icon: 'user', text: `${CAST[c].name} joined the chat` });
+          if (joining.length && thread) {
+            next = { ...next, threads: { ...next.threads, [st.chatId]: { ...next.threads[st.chatId], members: [...thread.members, ...joining] } } };
+          }
+          return next;
         });
         if (/@(iris|all)\b/i.test(text)) markDone('mention');
         const chatId = s.chatId;
@@ -331,7 +350,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
             enqueue({
               character: c,
               make: () => {
-                const lines = (CHAT_SCRIPTS[chatId] ?? CHAT_SCRIPTS[CHAT_IDS.lateTrains])[c];
+                const lines = scriptFor(stateRef.current, chatId)[c];
                 return { text: lines[rotation.current[c]++ % lines.length] };
               },
             });
@@ -379,7 +398,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
       },
       openChat(id) {
         setState((s) => {
-          if (id === s.chatId || !s.threads[id]) return { ...s, ui: { ...s.ui, chatsOpen: false } };
+          if (id === s.chatId || !s.threads[id]) return { ...s, ui: { ...s.ui, chatsOpen: false, newChat: false } };
           const paused = pauseAll(s);
           const saved = { ...s.threads[s.chatId], items: s.items, addressees: s.addressees, draft: s.draft };
           const next = s.threads[id];
@@ -391,9 +410,47 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
             draft: next.draft,
             picker: { open: false, query: '', index: 0 },
             threads: { ...s.threads, [s.chatId]: saved, [id]: { ...next, unread: false } },
-            ui: { ...s.ui, chatsOpen: false, highlightId: null, editFocus: null },
+            ui: { ...s.ui, chatsOpen: false, highlightId: null, editFocus: null, newChat: false },
           };
         });
+      },
+      startNewChat() {
+        setState((s) => ({ ...pauseAll(s), picker: { open: false, query: '', index: 0 }, ui: { ...s.ui, newChat: true, chatsOpen: false, castOpen: false } }));
+      },
+      cancelNewChat() {
+        setState((s) => ({ ...s, ui: { ...s.ui, newChat: false } }));
+      },
+      createChat({ templateId, cast, brief, name }) {
+        const template = templateById(templateId);
+        const text = brief.trim();
+        if (!template || !text || cast.length === 0) return;
+        const id = uid('c');
+        const items: ThreadItem[] = [
+          { id: uid('d'), kind: 'day', label: 'Today' },
+          { id: uid('i'), kind: 'message', sender: 'user', text, time: clockNow() },
+        ];
+        const thread = { id, title: name.trim() || autoTitle(text, template.label), dayLabel: null, unread: false, items, addressees: cast, draft: '', members: cast, templateId };
+        setState((s) => {
+          const saved = { ...s.threads[s.chatId], items: s.items, addressees: s.addressees, draft: s.draft };
+          return {
+            ...pauseAll(s),
+            chatId: id,
+            items,
+            addressees: cast,
+            draft: '',
+            picker: { open: false, query: '', index: 0 },
+            order: [id, ...s.order],
+            threads: { ...s.threads, [s.chatId]: saved, [id]: thread },
+            ui: { ...s.ui, newChat: false, chatsOpen: false, highlightId: null, editFocus: null },
+          };
+        });
+        // Each invited character opens with a first draft (Nova before Iris).
+        for (const c of (['nova', 'iris'] as CharacterId[]).filter((x) => cast.includes(x))) {
+          const first = template.first[c];
+          if (!first) continue;
+          if (first.kind) replyWithMedia(c, first.text, first.kind, id, true);
+          else enqueue({ character: c, chatId: id, make: () => ({ text: first.text }) });
+        }
       },
       registerEl(id) {
         return (el) => {

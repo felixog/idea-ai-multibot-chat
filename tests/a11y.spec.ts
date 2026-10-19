@@ -120,3 +120,14 @@ test('keyboard demo path: trim, edit and apply, play, mention, mute', async ({ p
   // Checklist ticks.
   await expect(page.getByRole('button', { name: /, done$/ })).toHaveCount(5);
 });
+
+test('axe: new chat flow at 1440 and 390', async ({ page }) => {
+  for (const [w, h] of [[1440, 900], [390, 844]] as const) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto('/');
+    if (w === 390) await page.getByRole('button', { name: 'Open chats' }).click();
+    await page.getByRole('button', { name: 'New chat' }).click();
+    await page.getByText('Song teaser').click();
+    await axe(page, `${w} new chat`);
+  }
+});

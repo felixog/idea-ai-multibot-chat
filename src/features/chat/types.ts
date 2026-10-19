@@ -111,6 +111,10 @@ export interface ThreadData {
   items: ThreadItem[];
   addressees: CharacterId[];
   draft: string;
+  /** Characters in this chat; others join when @mentioned. */
+  members: CharacterId[];
+  /** Chats started from the new-chat flow remember their template (replies, art). */
+  templateId?: string;
 }
 
 export interface ThreadContent {
@@ -122,6 +126,8 @@ export interface ThreadContent {
 export interface ChatState {
   chatId: string;
   threads: Record<string, ThreadData>;
+  /** Chat list order, newest first for chats started here. */
+  order: string[];
   items: ThreadItem[];
   media: Record<string, Media>;
   addressees: CharacterId[];
@@ -139,6 +145,8 @@ export interface ChatState {
     /** Web layouts: the chats sidebar and the cast panel can be collapsed (remembered per viewer). */
     chatsCollapsed: boolean;
     castCollapsed: boolean;
+    /** The new-chat flow is showing in the main pane. */
+    newChat: boolean;
   };
   demo: { done: string[]; dismissed: boolean };
   /** Phone 390 preview from the demo card. */

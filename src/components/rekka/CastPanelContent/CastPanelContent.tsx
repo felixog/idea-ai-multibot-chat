@@ -9,7 +9,7 @@ import s from './CastPanelContent.module.css';
 export function CastPanelContent({ showTitle = true, titleId }: { showTitle?: boolean; titleId?: string }) {
   const chat = useChat();
   const { muted } = chat.state;
-  const rows = madeItems(chat.state);
+  const rows = chat.state.ui.newChat ? [] : madeItems(chat.state);
   return (
     <div className={s.root}>
       {showTitle && <h2 id={titleId} className={`headline_3 ${s.heading}`}>In this chat</h2>}
@@ -20,7 +20,8 @@ export function CastPanelContent({ showTitle = true, titleId }: { showTitle?: bo
           <h3 id="made-heading" className="body_small_bold">Made in this chat</h3>
           <span className={`body_tiny ${s.count}`}>{rows.length} items</span>
         </div>
-        <ul className={s.list}>
+        {rows.length === 0 && <p className={`body_small ${s.empty}`}>Nothing yet. Media from this chat will collect here.</p>}
+        <ul className={s.list} hidden={rows.length === 0}>
           {rows.map(({ media }) => (
             <li key={media.id}>
               <MadeItem media={media} onClick={() => chat.jumpTo(media.id)} />

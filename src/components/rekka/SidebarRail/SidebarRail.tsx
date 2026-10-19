@@ -14,7 +14,7 @@ export function SidebarRail({ onExpand }: { onExpand: () => void }) {
   return (
     <div className={s.root}>
       <Tooltip label="New chat">
-        <IconButton variant="plain" size="md" icon={SquarePen} label="New chat" onClick={() => chat.toast('New chats aren’t part of this prototype')} />
+        <IconButton variant="plain" size="md" icon={SquarePen} label="New chat" onClick={chat.startNewChat} />
       </Tooltip>
       <Tooltip label="Chats">
         <IconButton variant="plain" size="md" icon={MessagesSquare} label="Chats" onClick={onExpand} />

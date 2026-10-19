@@ -43,8 +43,13 @@ export function Composer({ layout }: { layout: 'desktop' | 'mobile' }) {
       pendingCaret.current = chatRef.current.startMention(el.value.length);
       el.focus();
     };
+    const onFocus = () => input.current?.focus();
     window.addEventListener('rk:start-mention', onStart);
-    return () => window.removeEventListener('rk:start-mention', onStart);
+    window.addEventListener('rk:focus-composer', onFocus);
+    return () => {
+      window.removeEventListener('rk:start-mention', onStart);
+      window.removeEventListener('rk:focus-composer', onFocus);
+    };
   }, []);
 
   const caret = () => input.current?.selectionEnd ?? draft.length;

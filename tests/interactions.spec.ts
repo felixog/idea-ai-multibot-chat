@@ -178,3 +178,33 @@ test('three chats: switch, apply the album edit, background reply marks unread',
   await album.click();
   await expect(page.getByRole('log').getByText(/title sit at the top|amber dial|window lit/)).toBeVisible();
 });
+
+test('new chat flow: guided steps create a chat at the top of the list', async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.getByRole('button', { name: 'New chat' }).click();
+  await expect(page.getByRole('heading', { name: 'Start a new chat' })).toBeFocused();
+  const start = page.getByRole('button', { name: 'Start chat' });
+  await expect(start).toBeDisabled();
+  await page.getByText('Cover art', { exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: /Iris/ })).toBeChecked();
+  await expect(page.getByRole('checkbox', { name: /Nova/ })).not.toBeChecked();
+  await page.getByRole('button', { name: /EP called Night Shift/ }).click();
+  await expect(page.getByLabel(/Chat name/)).toHaveAttribute('placeholder', 'EP called Night Shift');
+  await start.click();
+
+  await expect(page.locator('main h1')).toHaveText('EP called Night Shift');
+  await expect(page.locator('#message-box')).toBeFocused();
+  const rows = page.getByRole('navigation', { name: 'Chats' }).getByRole('button', { name: /EP called Night Shift|Late trains teaser/ });
+  await expect(rows.first()).toContainText('EP called Night Shift');
+  await expect(page.getByRole('group', { name: 'Image: Cover' })).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('main > header')).toContainText('You and Iris');
+
+  await page.locator('#message-box').fill('@Nova a short sting for this please');
+  await page.locator('#message-box').press('Enter');
+  await expect(page.getByRole('log').getByText('Nova joined the chat')).toBeVisible();
+  await expect(page.locator('main > header')).toContainText('You, Iris and Nova');
+
+  await page.getByRole('button', { name: 'New chat' }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('main h1')).toHaveText('EP called Night Shift');
+});
