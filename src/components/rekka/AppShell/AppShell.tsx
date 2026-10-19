@@ -41,7 +41,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
 
   if (mobile) {
     return (
-      <div className={cx(s.mobileRoot, 'is-small', contained && s.contained)}>
+      <div className={cx(s.mobileRoot, 'is-small', contained && s.contained, capture && s.figmaDock)}>
         {skip}
         <ThreadHeader
           ref={castTrigger}
@@ -69,10 +69,23 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
     );
   }
 
+  // Move focus to the matching toggle once a panel finishes collapsing or expanding.
+  const focusLater = (id: string) => window.setTimeout(() => document.getElementById(id)?.focus(), 0);
+  const castCollapsed = layout === 'web' && ui.castCollapsed;
+
   return (
     <div className={cx(s.webRoot, capture && s.capture, contained && s.contained)}>
       {skip}
-      <Sidebar footer={demoCard} headerExtra={sidebarExtra} />
+      <div className={cx(s.panelLeft, ui.chatsCollapsed && s.collapsed)}>
+        <Sidebar
+          footer={demoCard}
+          headerExtra={sidebarExtra}
+          onCollapse={() => {
+            chat.setChatsCollapsed(true);
+            focusLater('show-chats-button');
+          }}
+        />
+      </div>
       <main className={s.thread}>
         <ThreadHeader
           ref={castTrigger}
@@ -80,7 +93,25 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
           title={THREAD_TITLE}
           muted={muted}
           castOpen={ui.castOpen}
-          onOpenCast={layout === 'web-collapsed' ? () => chat.setCastOpen(true) : undefined}
+          castAction={castCollapsed ? 'show' : 'open'}
+          onOpenCast={
+            layout === 'web-collapsed'
+              ? () => chat.setCastOpen(true)
+              : castCollapsed
+                ? () => {
+                    chat.setCastCollapsed(false);
+                    focusLater('hide-cast-button');
+                  }
+                : undefined
+          }
+          onShowChats={
+            ui.chatsCollapsed
+              ? () => {
+                  chat.setChatsCollapsed(false);
+                  focusLater('hide-chats-button');
+                }
+              : undefined
+          }
         />
         <ChatThread layout="desktop" capture={capture} />
         <div className={s.dock}>
@@ -90,9 +121,16 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
         </div>
       </main>
       {layout === 'web' ? (
-        <aside className={s.cast} aria-label="Cast">
-          <CastPanelContent />
-        </aside>
+        <div className={cx(s.panelRight, castCollapsed && s.collapsed)}>
+          <aside id="cast-panel" className={s.cast} aria-label="Cast">
+            <CastPanelContent
+              onCollapse={() => {
+                chat.setCastCollapsed(true);
+                focusLater('cast-trigger');
+              }}
+            />
+          </aside>
+        </div>
       ) : (
         <Drawer open={ui.castOpen} onOpenChange={chat.setCastOpen} side="right" title="In this chat" container={container}>
           <CastPanelContent showTitle />

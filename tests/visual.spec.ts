@@ -3,8 +3,7 @@ import fs from 'node:fs';
 import { compare } from './compare';
 
 const SCREENS: Array<{ name: string; width: number; query: string; height?: number }> = [
-  // The Desktop 1440 frame (2135) clips the composer dock's 24px bottom padding; the Main component it uses is 2159.
-  { name: 'desktop-1440', width: 1440, query: '?capture=full', height: 2159 },
+  { name: 'desktop-1440', width: 1440, query: '?capture=full' },
   { name: 'tablet-744', width: 744, query: '?capture=full&state=mentioning' },
   { name: 'mobile-390', width: 390, query: '?capture=full&state=mentioning' },
 ];

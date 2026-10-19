@@ -108,6 +108,9 @@ export interface ChatState {
     shakeKey: number;
     /** Media whose edit field should take focus when it opens. */
     editFocus: string | null;
+    /** Web layouts: the chats sidebar and the cast panel can be collapsed (remembered per viewer). */
+    chatsCollapsed: boolean;
+    castCollapsed: boolean;
   };
   demo: { done: string[]; dismissed: boolean };
   /** Phone 390 preview from the demo card. */

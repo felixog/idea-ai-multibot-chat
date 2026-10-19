@@ -5,6 +5,7 @@ import { KEYWORDS, newEditCard, REPLIES, SEED_TRIM, seedState } from './script';
 import { createSimulator, typingDelay } from './simulate';
 import type { AudioMedia, ChatState, EditCardMedia, ImageMedia, Media, MediaActions, Range, ThreadItem, VideoMedia } from './types';
 import { COVER_SRC, duration, WARM_FILTER } from '../../lib/media';
+import { CAST_COLLAPSED_KEY, CHATS_COLLAPSED_KEY, writeFlag } from '../../lib/storage';
 import { clockNow, mss, secs } from '../../lib/time';
 
 type Updater = (s: ChatState) => ChatState;
@@ -30,6 +31,8 @@ export interface ChatApi extends MediaActions {
   dismissToast(): void;
   setChatsOpen(open: boolean): void;
   setCastOpen(open: boolean): void;
+  setChatsCollapsed(collapsed: boolean): void;
+  setCastCollapsed(collapsed: boolean): void;
   jumpTo(mediaId: string): void;
   registerEl(id: string): (el: HTMLElement | null) => void;
   markDone(key: DemoKey): void;
@@ -325,6 +328,14 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
       setCastOpen(open) {
         setState((s) => ({ ...s, ui: { ...s.ui, castOpen: open } }));
       },
+      setChatsCollapsed(collapsed) {
+        writeFlag(CHATS_COLLAPSED_KEY, collapsed);
+        setState((s) => ({ ...s, ui: { ...s.ui, chatsCollapsed: collapsed } }));
+      },
+      setCastCollapsed(collapsed) {
+        writeFlag(CAST_COLLAPSED_KEY, collapsed);
+        setState((s) => ({ ...s, ui: { ...s.ui, castCollapsed: collapsed } }));
+      },
       registerEl(id) {
         return (el) => {
           if (el) els.current.set(id, el);
@@ -359,10 +370,10 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         busy.current = false;
         rotation.current = { nova: 0, iris: 0, take: 2 };
         const dismissed = stateRef.current.demo.dismissed;
-        const preview = stateRef.current.preview;
+        const { preview, ui } = stateRef.current;
         setState(() => {
           const s = seedState();
-          return { ...s, demo: { ...s.demo, dismissed }, preview };
+          return { ...s, demo: { ...s.demo, dismissed }, preview, ui: { ...s.ui, chatsCollapsed: ui.chatsCollapsed, castCollapsed: ui.castCollapsed } };
         });
       },
 

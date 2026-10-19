@@ -57,7 +57,7 @@ export function seedState(): ChatState {
     muted: { nova: false, iris: false },
     draft: '',
     picker: { open: false, query: '', index: 0 },
-    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0, editFocus: null },
+    ui: { chatsOpen: false, castOpen: false, toast: null, highlightId: null, shakeKey: 0, editFocus: null, chatsCollapsed: false, castCollapsed: false },
     demo: { done: [], dismissed: false },
     preview: 'fit',
   };

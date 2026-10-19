@@ -17,3 +17,5 @@ export function writeFlag(key: string, on: boolean) {
 }
 
 export const DEMO_HIDDEN_KEY = 'rk-demo-hidden';
+export const CHATS_COLLAPSED_KEY = 'rk-chats-collapsed';
+export const CAST_COLLAPSED_KEY = 'rk-cast-collapsed';
