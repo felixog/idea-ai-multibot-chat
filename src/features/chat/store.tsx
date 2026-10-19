@@ -11,7 +11,8 @@ import { clockNow, mss, secs } from '../../lib/time';
 type Updater = (s: ChatState) => ChatState;
 const reducer = (s: ChatState, fn: Updater) => fn(s);
 
-export type DemoKey = 'trim' | 'apply' | 'play' | 'mention' | 'mute' | 'phone';
+/** 'edit' marks row 2 as started (changes requested); 'apply' completes it. */
+export type DemoKey = 'trim' | 'edit' | 'apply' | 'play' | 'mention' | 'mute' | 'phone';
 
 export interface ChatApi extends MediaActions {
   state: ChatState;
@@ -92,6 +93,8 @@ interface Reply {
 interface Job {
   character: CharacterId;
   delay?: number;
+  /** A direct request on the character's own media (Make changes): it goes through even when the character is muted. */
+  direct?: boolean;
   make: () => Reply;
 }
 
@@ -131,11 +134,11 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
       pump();
     };
     sim.after(job.delay ?? 0, () => {
-      if (stateRef.current.muted[job.character]) return next();
+      if (!job.direct && stateRef.current.muted[job.character]) return next();
       const typingId = uid('t');
       update((s) => addItem(s, { id: typingId, kind: 'typing', character: job.character }));
       sim.after(typingDelay(), () => {
-        if (stateRef.current.muted[job.character]) {
+        if (!job.direct && stateRef.current.muted[job.character]) {
           update((s) => ({ ...s, items: s.items.filter((i) => i.id !== typingId) }));
           return next();
         }
@@ -439,9 +442,11 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         const m = media<AudioMedia | ImageMedia | VideoMedia>(id);
         if (!m.changeDraft.trim()) return;
         setState((s) => patchMedia(s, id, { state: 'default' } as Partial<Media>));
+        if (m.kind === 'image') markDone('edit');
         if (m.kind === 'audio') {
           enqueue({
             character: m.owner,
+            direct: true,
             make: () => ({
               text: REPLIES.hookEdit,
               onLanded: () => runGeneration(id, 2400, (x) => ({ version: (x as AudioMedia).version + 1 }) as Partial<Media>),
@@ -452,6 +457,7 @@ export function ChatProvider({ children, initial, frozen = false }: { children: 
         const kind = m.kind;
         enqueue({
           character: m.owner,
+          direct: true,
           make: () => {
             const card = newEditCard(uid('e'), m.owner, id, kind);
             return { text: kind === 'image' ? REPLIES.coverEdit : REPLIES.loopEdit, media: card, onLanded: () => runEditCard(card.id) };

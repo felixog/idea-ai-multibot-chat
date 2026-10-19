@@ -10,5 +10,3 @@
 .castButton { display: inline-flex; align-items: center; min-height: var(--layout-touch); padding: 0 var(--rk_spacing_1x);
   border-radius: var(--radius-200); cursor: pointer; transition: background-color .15s; }
 .castButton:hover { background: var(--backgroundElevation_Alt); }
-.castButton { gap: var(--rk_spacing_2x); }
-.castIcon { color: var(--contentPrimary); margin-right: var(--rk_spacing_1x); }

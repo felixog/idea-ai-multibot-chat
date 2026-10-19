@@ -9,6 +9,7 @@
 .row:hover { color: var(--contentPrimary); }
 .icon { flex: none; margin-top: var(--rk_spacing_half); color: var(--contentTetiary); }
 .done .icon { color: var(--contentConstructive); }
+.started .icon { color: var(--contentAction_Default); }
 .footer { display: flex; justify-content: space-between; }
 .credit { color: var(--contentTetiary); padding: 0 var(--rk_spacing_1x); text-decoration: none; border-radius: var(--radius-100); }
 .credit:hover { text-decoration: underline; }

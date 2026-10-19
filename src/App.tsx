@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { AppShell } from './components/rekka/AppShell/AppShell';
-import { DemoCard, ShowTips } from './components/rekka/DemoCard/DemoCard';
+import { DemoCard } from './components/rekka/DemoCard/DemoCard';
 import { PhonePreview } from './components/rekka/PhonePreview/PhonePreview';
 import Gallery from './features/gallery/Gallery';
 import { captureState, readCapture } from './features/chat/capture';
@@ -30,11 +30,11 @@ function Root({ capture, focusComposer }: { capture: boolean; focusComposer: boo
   if (preview === 'phone' && !capture) {
     return (
       <PhonePreview onBack={() => chat.setPreview('fit')}>
-        {(frame) => <AppShell contained container={frame} demoCard={card(() => chat.setChatsOpen(false))} sidebarExtra={<ShowTips />} />}
+        {(frame) => <AppShell contained container={frame} demoCard={card(() => chat.setChatsOpen(false))} />}
       </PhonePreview>
     );
   }
-  return <AppShell capture={capture} demoCard={card(layout === 'mobile' ? () => chat.setChatsOpen(false) : undefined)} sidebarExtra={capture ? undefined : <ShowTips />} />;
+  return <AppShell capture={capture} demoCard={card(layout === 'mobile' ? () => chat.setChatsOpen(false) : undefined)} />;
 }
 
 export default function App() {

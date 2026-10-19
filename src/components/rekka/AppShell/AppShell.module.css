@@ -1,17 +1,7 @@
 .webRoot { display: flex; height: 100dvh; background: var(--backgroundElevation0); }
 .thread { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .dock { display: flex; justify-content: center; flex: none; padding: 0 var(--rk_spacing_6x); }
-/* Collapsible sidebars (web layouts). Visibility flips after the width transition so hidden panels leave the tab order. */
-.panelLeft, .panelRight { flex: none; overflow: hidden;
-  transition: width .2s cubic-bezier(.2,.8,.2,1), visibility 0s; }
-.panelLeft { width: var(--layout-sidebar); }
-.panelRight { width: var(--layout-cast); }
-.panelLeft > *, .panelRight > * { width: var(--layout-sidebar); }
-.panelRight > * { width: var(--layout-cast); }
-.collapsed { width: 0; visibility: hidden; transition: width .2s cubic-bezier(.2,.8,.2,1), visibility 0s .2s; }
 .dockColumn { width: 100%; max-width: var(--layout-thread-column); }
-.cast { display: flex; flex-direction: column; flex: none; width: var(--layout-cast); height: 100%; padding: var(--rk_spacing_6x);
-  border-left: var(--borderWidth-M) solid var(--border_Decorative); overflow-y: auto; }
 
 .mobileRoot { display: flex; flex-direction: column; height: 100dvh; background: var(--backgroundElevation0); }
 .mobileMain { display: flex; flex-direction: column; flex: 1; min-height: 0; }

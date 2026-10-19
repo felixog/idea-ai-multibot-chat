@@ -1,4 +1,4 @@
-import { Circle, CircleCheck, RotateCcw } from 'lucide-react';
+import { Circle, CircleCheck, CircleDot, RotateCcw } from 'lucide-react';
 import { COVER_ID, HOOK_ID, LOOP_ID } from '../../../features/chat/script';
 import { useChat, type DemoKey } from '../../../features/chat/store';
 import { useLayout } from '../../../lib/breakpoints';
@@ -7,18 +7,11 @@ import { Icon } from '../../../lib/icon';
 import { DEMO_HIDDEN_KEY, writeFlag } from '../../../lib/storage';
 import { Button } from '../Button/Button';
 import { Segmented } from '../Segmented/Segmented';
+import { DEMO_ROWS } from './rows';
 import s from './DemoCard.module.css';
 
 export const FIGMA_URL = 'https://www.figma.com/design/mXVWjW8DQRoi3pdiBcY0Gi/Felix-Oginni-%7C-Idea.ai-Challenge-%7C-Creative-Fabrica';
 
-const ROWS: Array<{ key: DemoKey; label: string }> = [
-  { key: 'trim', label: 'Save the trim on Nova’s hook' },
-  { key: 'apply', label: 'Make changes to Iris’s cover, then apply them' },
-  { key: 'play', label: 'Play the teaser loop' },
-  { key: 'mention', label: 'Mention @Iris or @all in the message box' },
-  { key: 'mute', label: 'Mute a character in the cast' },
-  { key: 'phone', label: 'Try the phone preview, or make the window narrower' },
-];
 
 /** "Try the prototype": the reviewer checklist, phone preview switch, Reset demo and Hide. */
 export function DemoCard({ onNavigate }: { onNavigate?: () => void }) {
@@ -65,15 +58,18 @@ export function DemoCard({ onNavigate }: { onNavigate?: () => void }) {
           ]}
         />
         <ol className={s.list}>
-          {ROWS.map((r) => {
+          {DEMO_ROWS.map((r) => {
             const isDone = done.includes(r.key);
+            // Row 2 shows "started" once changes are requested, before they are applied.
+            const started = !isDone && r.key === 'apply' && done.includes('edit');
             return (
               <li key={r.key}>
-                <button type="button" className={cx('body_small', s.row, isDone && s.done)} onClick={() => go(r.key)}>
-                  <Icon icon={isDone ? CircleCheck : Circle} size={16} className={s.icon} />
+                <button type="button" className={cx('body_small', s.row, isDone && s.done, started && s.started)} onClick={() => go(r.key)}>
+                  <Icon icon={isDone ? CircleCheck : started ? CircleDot : Circle} size={16} className={s.icon} />
                   <span>
                     {r.label}
                     {isDone && <span className="visually-hidden">, done</span>}
+                    {started && <span className="visually-hidden">, started</span>}
                   </span>
                 </button>
               </li>
@@ -98,22 +94,5 @@ export function DemoCard({ onNavigate }: { onNavigate?: () => void }) {
         Rex · prototype by Felix Oginni
       </a>
     </div>
-  );
-}
-
-export function ShowTips() {
-  const chat = useChat();
-  if (!chat.state.demo.dismissed) return null;
-  return (
-    <Button
-      variant="link"
-      size="sm"
-      onClick={() => {
-        writeFlag(DEMO_HIDDEN_KEY, false);
-        chat.setDemoDismissed(false);
-      }}
-    >
-      Show tips
-    </Button>
   );
 }

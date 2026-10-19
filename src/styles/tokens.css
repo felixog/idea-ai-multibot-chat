@@ -106,6 +106,7 @@
   --layout-image-max: 400px;
   --layout-avatar-column: 36px;
   --layout-touch: 44px;
+  --layout-rail: 64px;            /* collapsed sidebars */
 }
 
 /* Character identity: set data-character on any element; everything inside follows. */

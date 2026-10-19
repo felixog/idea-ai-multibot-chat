@@ -1,24 +1,18 @@
-import { Download, PanelRightClose, Plus } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
 import { madeItems } from '../../../features/chat/logic';
 import { useChat } from '../../../features/chat/store';
 import { Button } from '../Button/Button';
 import { CastCard } from '../CastCard/CastCard';
-import { IconButton } from '../IconButton/IconButton';
 import { MadeItem } from '../MadeItem/MadeItem';
 import s from './CastPanelContent.module.css';
 
-export function CastPanelContent({ showTitle = true, titleId, onCollapse }: { showTitle?: boolean; titleId?: string; onCollapse?: () => void }) {
+export function CastPanelContent({ showTitle = true, titleId }: { showTitle?: boolean; titleId?: string }) {
   const chat = useChat();
   const { muted } = chat.state;
   const rows = madeItems(chat.state);
   return (
     <div className={s.root}>
-      {showTitle && (
-        <div className={s.headRow}>
-          <h2 id={titleId} className={`headline_3 ${s.heading}`}>In this chat</h2>
-          {onCollapse && <IconButton variant="plain" size="sm" icon={PanelRightClose} id="hide-cast-button" label="Hide cast" aria-expanded aria-controls="cast-panel" onClick={onCollapse} />}
-        </div>
-      )}
+      {showTitle && <h2 id={titleId} className={`headline_3 ${s.heading}`}>In this chat</h2>}
       <CastCard character="nova" muted={muted.nova} onToggleMute={() => chat.toggleMute('nova')} />
       <CastCard character="iris" muted={muted.iris} onToggleMute={() => chat.toggleMute('iris')} />
       <section className={s.made} aria-labelledby="made-heading">

@@ -24,7 +24,8 @@ for (const screen of SCREENS) {
     const local = `tests/output/${screen.name}.png`;
     await page.screenshot({ path: local, fullPage: true, animations: 'disabled', caret: 'hide' });
     // Artwork is masked: Figma renders raster fills, the brief requires the SVG originals (docs/DECISIONS.md #34).
-    const masks = await page.$$eval('[data-visual-mask]', (els) =>
+    // Also masked: the chats sidebar, redesigned after the Figma review (DECISIONS #47).
+    const masks = await page.$$eval('[data-visual-mask], nav[aria-label="Chats"]', (els) =>
       els.map((e) => {
         const r = e.getBoundingClientRect();
         return { x: r.x + window.scrollX, y: r.y + window.scrollY, width: r.width, height: r.height };

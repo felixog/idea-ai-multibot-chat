@@ -114,3 +114,45 @@ test('reduced motion removes loops and transforms', async ({ page }) => {
   const dot = page.getByRole('article', { name: /is typing/ }).locator('span[aria-hidden] > span').first();
   expect(await dot.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
 });
+
+test('a muted character still delivers changes asked of their own media', async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.getByRole('button', { name: 'Mute Iris' }).click();
+  const cover = page.getByRole('group', { name: 'Image: Cover art, late trains' });
+  await cover.getByRole('button', { name: 'Make changes' }).click();
+  await expect(page.getByRole('button', { name: /then apply them\s*, started/ })).toBeVisible();
+  const edit = page.getByRole('group', { name: /Edit: Cover art, late trains/ });
+  await expect(edit).toContainText('Ready to review', { timeout: 9000 });
+  await edit.getByRole('button', { name: 'Apply edits' }).click();
+  await expect(page.getByRole('button', { name: /then apply them\s*, done/ })).toBeVisible();
+});
+
+test('sidebars collapse to rails, by button and by shortcut, keeping focus', async ({ page }) => {
+  const hideChats = page.getByRole('button', { name: 'Hide chats' });
+  await expect(hideChats).toHaveAttribute('aria-expanded', 'true');
+  await hideChats.click();
+  const showChats = page.getByRole('button', { name: 'Show chats' });
+  await expect(showChats).toBeFocused();
+  await expect(showChats).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('button', { name: 'Sunday market vlog' })).toHaveCount(0);
+  await expect.poll(async () => Math.round((await page.getByRole('navigation', { name: 'Chats' }).boundingBox())!.width)).toBe(64);
+
+  await page.keyboard.press('Control+.');
+  await expect(page.getByRole('button', { name: 'Show cast' })).toBeVisible();
+  await page.getByRole('button', { name: 'Iris, Visual director' }).click();
+  await expect(page.getByRole('button', { name: 'Mute Iris' })).toBeFocused();
+
+  await page.keyboard.press('Control+b');
+  await expect(page.getByRole('button', { name: 'Hide chats' })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Hide chats' })).toBeVisible();
+});
+
+test('1100: the cast is a rail that opens the drawer', async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 800 });
+  await page.getByRole('button', { name: 'Made in this chat, 3 items' }).click();
+  const drawer = page.getByRole('dialog', { name: 'In this chat' });
+  await expect(drawer).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(drawer).toBeHidden();
+});

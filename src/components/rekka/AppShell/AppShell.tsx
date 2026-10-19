@@ -1,13 +1,17 @@
-import { useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { THREAD_TITLE } from '../../../features/chat/script';
 import { useChat } from '../../../features/chat/store';
 import { useLayout } from '../../../lib/breakpoints';
 import { cx } from '../../../lib/cx';
+import { modAria, modKey, SHORTCUTS } from '../../../lib/shortcuts';
 import { CastPanelContent } from '../CastPanelContent/CastPanelContent';
 import { ChatThread } from '../ChatThread/ChatThread';
 import { Composer, COMPOSER_INPUT_ID } from '../Composer/Composer';
 import { Drawer } from '../Drawer/Drawer';
-import { Sidebar } from '../Sidebar/Sidebar';
+import { CastRail, type CastTarget } from '../CastRail/CastRail';
+import { SidePanel } from '../SidePanel/SidePanel';
+import { Brand, Sidebar } from '../Sidebar/Sidebar';
+import { SidebarRail } from '../SidebarRail/SidebarRail';
 import { ThreadHeader } from '../ThreadHeader/ThreadHeader';
 import { Toast } from '../Toast/Toast';
 import s from './AppShell.module.css';
@@ -16,14 +20,13 @@ interface AppShellProps {
   capture?: boolean;
   /** The Try the prototype card for the sidebar or chats drawer. */
   demoCard?: ReactNode;
-  sidebarExtra?: ReactNode;
   /** Overlay container when rendered inside the phone preview frame. */
   container?: HTMLElement | null;
   /** Fill the parent (phone preview) instead of the viewport. */
   contained?: boolean;
 }
 
-export function AppShell({ capture = false, demoCard, sidebarExtra, container, contained = false }: AppShellProps) {
+export function AppShell({ capture = false, demoCard, container, contained = false }: AppShellProps) {
   const chat = useChat();
   const layout = useLayout();
   const { ui, muted } = chat.state;
@@ -38,6 +41,44 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
   const toast = ui.toast && (
     <Toast key={ui.toast.id} message={ui.toast.message} onDismiss={chat.dismissToast} placement={mobile ? 'mobile' : 'desktop'} persistent={capture} />
   );
+
+  // 1024 to 1279: the cast is always a rail and opens as a drawer.
+  const castRailOnly = layout === 'web-collapsed';
+  const toggleChats = () => chat.setChatsCollapsed(!chat.state.ui.chatsCollapsed);
+  const toggleCast = () => (castRailOnly ? chat.setCastOpen(true) : chat.setCastCollapsed(!chat.state.ui.castCollapsed));
+
+  /** From the cast rail: open the panel (or drawer) and move focus to what was clicked. */
+  const openCast = (target: CastTarget) => {
+    if (castRailOnly) chat.setCastOpen(true);
+    else chat.setCastCollapsed(false);
+    window.setTimeout(() => {
+      const el =
+        target === 'made'
+          ? document.querySelector<HTMLElement>('[aria-labelledby="made-heading"] li button')
+          : document.querySelector<HTMLElement>(`#cast-card-${target} button`);
+      el?.scrollIntoView({ block: 'nearest' });
+      el?.focus();
+    }, castRailOnly ? 260 : 60);
+  };
+
+  // ⌘/Ctrl+B toggles the chats sidebar, ⌘/Ctrl+. the cast (web layouts).
+  const shortcuts = useRef({ toggleChats, toggleCast });
+  shortcuts.current = { toggleChats, toggleCast };
+  useEffect(() => {
+    if (mobile || capture) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || e.shiftKey || e.altKey) return;
+      if (e.key.toLowerCase() === SHORTCUTS.chats.toLowerCase()) {
+        e.preventDefault();
+        shortcuts.current.toggleChats();
+      } else if (e.key === SHORTCUTS.cast) {
+        e.preventDefault();
+        shortcuts.current.toggleCast();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobile, capture]);
 
   if (mobile) {
     return (
@@ -59,7 +100,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
           </div>
         </main>
         <Drawer open={ui.chatsOpen} onOpenChange={chat.setChatsOpen} side="left" title="Chats" container={container}>
-          <Sidebar onClose={() => chat.setChatsOpen(false)} footer={demoCard} headerExtra={sidebarExtra} />
+          <Sidebar onClose={() => chat.setChatsOpen(false)} footer={demoCard} />
         </Drawer>
         <Drawer open={ui.castOpen} onOpenChange={chat.setCastOpen} side="bottom" title="In this chat" container={container}>
           <CastPanelContent showTitle={false} />
@@ -69,23 +110,22 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
     );
   }
 
-  // Move focus to the matching toggle once a panel finishes collapsing or expanding.
-  const focusLater = (id: string) => window.setTimeout(() => document.getElementById(id)?.focus(), 0);
-  const castCollapsed = layout === 'web' && ui.castCollapsed;
-
   return (
     <div className={cx(s.webRoot, capture && s.capture, contained && s.contained)}>
       {skip}
-      <div className={cx(s.panelLeft, ui.chatsCollapsed && s.collapsed)}>
-        <Sidebar
-          footer={demoCard}
-          headerExtra={sidebarExtra}
-          onCollapse={() => {
-            chat.setChatsCollapsed(true);
-            focusLater('show-chats-button');
-          }}
-        />
-      </div>
+      <SidePanel
+        side="left"
+        as="nav"
+        label="Chats"
+        title={<Brand />}
+        collapsed={ui.chatsCollapsed}
+        onToggle={toggleChats}
+        toggleLabel={{ show: 'Show chats', hide: 'Hide chats' }}
+        shortcut={{ display: modKey(SHORTCUTS.chats), aria: modAria(SHORTCUTS.chats) }}
+        rail={<SidebarRail onExpand={() => chat.setChatsCollapsed(false)} />}
+      >
+        <Sidebar footer={demoCard} />
+      </SidePanel>
       <main className={s.thread}>
         <ThreadHeader
           ref={castTrigger}
@@ -93,25 +133,7 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
           title={THREAD_TITLE}
           muted={muted}
           castOpen={ui.castOpen}
-          castAction={castCollapsed ? 'show' : 'open'}
-          onOpenCast={
-            layout === 'web-collapsed'
-              ? () => chat.setCastOpen(true)
-              : castCollapsed
-                ? () => {
-                    chat.setCastCollapsed(false);
-                    focusLater('hide-cast-button');
-                  }
-                : undefined
-          }
-          onShowChats={
-            ui.chatsCollapsed
-              ? () => {
-                  chat.setChatsCollapsed(false);
-                  focusLater('hide-chats-button');
-                }
-              : undefined
-          }
+          onOpenCast={castRailOnly ? () => chat.setCastOpen(true) : undefined}
         />
         <ChatThread layout="desktop" capture={capture} />
         <div className={s.dock}>
@@ -120,18 +142,21 @@ export function AppShell({ capture = false, demoCard, sidebarExtra, container, c
           </div>
         </div>
       </main>
-      {layout === 'web' ? (
-        <div className={cx(s.panelRight, castCollapsed && s.collapsed)}>
-          <aside id="cast-panel" className={s.cast} aria-label="Cast">
-            <CastPanelContent
-              onCollapse={() => {
-                chat.setCastCollapsed(true);
-                focusLater('cast-trigger');
-              }}
-            />
-          </aside>
-        </div>
-      ) : (
+      <SidePanel
+        side="right"
+        as="aside"
+        label="Cast"
+        title={<h2 className="headline_3">In this chat</h2>}
+        collapsed={castRailOnly || ui.castCollapsed}
+        railOnly={castRailOnly}
+        onToggle={toggleCast}
+        toggleLabel={castRailOnly ? { show: 'Open cast', hide: 'Open cast' } : { show: 'Show cast', hide: 'Hide cast' }}
+        shortcut={{ display: modKey(SHORTCUTS.cast), aria: modAria(SHORTCUTS.cast) }}
+        rail={<CastRail onOpen={openCast} />}
+      >
+        <CastPanelContent showTitle={false} />
+      </SidePanel>
+      {castRailOnly && (
         <Drawer open={ui.castOpen} onOpenChange={chat.setCastOpen} side="right" title="In this chat" container={container}>
           <CastPanelContent showTitle />
         </Drawer>

@@ -8,7 +8,7 @@ import s from './CastCard.module.css';
 export function CastCard({ character, muted, onToggleMute }: { character: CharacterId; muted: boolean; onToggleMute: () => void }) {
   const c = CAST[character];
   return (
-    <section aria-label={c.name} data-character={c.bot} className={s.root}>
+    <section id={`cast-card-${character}`} aria-label={c.name} data-character={c.bot} className={s.root}>
       <div className={s.head}>
         <Avatar character={character} size="lg" decorative muted={muted} />
         <div className={s.names}>
