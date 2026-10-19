@@ -67,3 +67,4 @@ Run on 17 Oct 2026 against `npm run preview` in headless Chromium (Playwright 1.
 - Per-deployment URLs stay behind Vercel Authentication (HTTP 302 to login), as intended.
 - Against production (`BASE_URL=https://idea-ai-multibot-chat.vercel.app npx playwright test tests/visual.spec.ts tests/a11y.spec.ts`): desktop 0.63%, tablet 1.92%, mobile 1.87%; axe and the keyboard demo path pass.
 - 19 Oct: the production domain is now https://idea-ai-multibot-chat.vercel.app (the `rekka-multibot-chat.vercel.app` alias returns 404). Sharing tags updated to it.
+- GitHub: https://github.com/felixog/idea-ai-multibot-chat, connected to the Vercel project; pushes to `main` deploy to production.
